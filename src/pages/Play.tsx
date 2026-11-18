@@ -184,7 +184,12 @@ export default function Play() {
                 {o.label}
               </button>
             ))}
-            <button type="button" onClick={g.resetSession}>
+            <button
+              type="button"
+              onClick={g.resetSession}
+              disabled={!idle || !!g.freeSpins || g.limit.current != null || !!g.limit.pending}
+              title={g.limit.current != null ? 'Nicht möglich, solange eine Limite aktiv ist' : undefined}
+            >
               Session zurücksetzen
             </button>
           </div>

@@ -24,6 +24,8 @@ export interface FreeSpinsState {
   remaining: number;
   total: number;
   totalWin: number;
+  /** best single spin of this round (for biggestWin stat) */
+  bestSpin: number;
   bet: number;
 }
 
@@ -112,7 +114,8 @@ export const useGame = create<GameState>()((set, get) => {
   const refreshLimit = () => {
     const { limit } = get();
     if (limit.pending && Date.now() >= limit.pending.activeAt) {
-      set({ limit: { current: limit.pending.value, pending: null } });
+      const v = limit.pending.value;
+      set({ limit: { current: Number.isFinite(v) ? v : null, pending: null } });
     }
   };
 
@@ -163,11 +166,12 @@ export const useGame = create<GameState>()((set, get) => {
   };
 
   const enterFreeSpins = async (count: number, bet: number) => {
-    set({ phase: 'fsIntro', freeSpins: { remaining: count, total: count, totalWin: 0, bet } });
+    set({ phase: 'fsIntro', freeSpins: { remaining: count, total: count, totalWin: 0, bestSpin: 0, bet } });
     bus.emit('freeSpinsTriggered', { count, retrigger: false });
     await sleep(get().turbo ? 400 : 1100);
+    const introEnd = waitFor('freeSpinsIntroEnd', 120000);
     bus.emit('freeSpinsIntroStart', { count });
-    await waitFor('freeSpinsIntroEnd', 120000);
+    await introEnd;
     bus.emit('freeSpinsStart', { total: count });
     await sleep(500);
     nextFreeSpin();
@@ -176,8 +180,7 @@ export const useGame = create<GameState>()((set, get) => {
   const nextFreeSpin = () => {
     const fs = get().freeSpins;
     if (!fs) return;
-    fs.remaining -= 1;
-    set({ freeSpins: { ...fs } });
+    set({ freeSpins: { ...fs, remaining: fs.remaining - 1 } });
     startSpin('free');
   };
 
@@ -189,7 +192,7 @@ export const useGame = create<GameState>()((set, get) => {
     set({
       balance: r2(get().balance + fs.totalWin),
       lastWin: r2(fs.totalWin),
-      stats: { ...st, biggestWin: Math.max(st.biggestWin, fs.totalWin) },
+      stats: { ...st, biggestWin: Math.max(st.biggestWin, fs.bestSpin) },
     });
     await sleep(2500);
     set({ freeSpins: null, phase: 'idle' });
@@ -221,8 +224,9 @@ export const useGame = create<GameState>()((set, get) => {
 
       const big = r.winTier === 'big' || r.winTier === 'mega' || r.winTier === 'epic';
       if (big) {
+        const bigEnd = waitFor('bigWinEnd', 60000);
         bus.emit('bigWinStart', { tier: r.winTier as 'big' | 'mega' | 'epic', amount: r.totalWin, bet: r.bet });
-        await waitFor('bigWinEnd', 60000);
+        await bigEnd;
         set({ winAmount: r.totalWin, winDurationMs: 0 });
       } else {
         const rollMs = turbo ? 400 : Math.min(2500, 600 + (r.totalWin / r.bet) * 250);
@@ -246,7 +250,7 @@ export const useGame = create<GameState>()((set, get) => {
       // money
       if (inFs) {
         const fs = get().freeSpins!;
-        set({ freeSpins: { ...fs, totalWin: r2(fs.totalWin + r.totalWin) } });
+        set({ freeSpins: { ...fs, totalWin: r2(fs.totalWin + r.totalWin), bestSpin: Math.max(fs.bestSpin, r.totalWin) } });
       } else {
         set((s) => ({
           balance: r2(s.balance + r.totalWin),
@@ -331,7 +335,10 @@ export const useGame = create<GameState>()((set, get) => {
     spin() {
       const s = get();
       if (s.phase === 'spinning') return s.quickStop();
-      if (s.phase !== 'idle' || s.realityCheckOpen) return;
+      if (s.phase !== 'idle' || s.realityCheckOpen) {
+        set({ autoplayLeft: 0 });
+        return;
+      }
       if (s.balance + 1e-9 < s.bet) {
         set({ autoplayLeft: 0 });
         return;
@@ -350,11 +357,26 @@ export const useGame = create<GameState>()((set, get) => {
     },
 
     onReelsStopped(r) {
-      if (presenting) return;
+      if (presenting) {
+        console.warn('[store] reels stopped while still presenting – result ignored');
+        return;
+      }
       presenting = true;
-      present(r).finally(() => {
-        presenting = false;
-      });
+      present(r)
+        .catch((err) => {
+          console.error('[store] presentation failed – recovering', err);
+          const fs = get().freeSpins;
+          set((s) => ({
+            phase: 'idle',
+            highlight: null,
+            autoplayLeft: 0,
+            freeSpins: null,
+            balance: fs ? r2(s.balance + fs.totalWin) : s.balance,
+          }));
+        })
+        .finally(() => {
+          presenting = false;
+        });
     },
 
     betUp() {
@@ -383,7 +405,7 @@ export const useGame = create<GameState>()((set, get) => {
 
     startAutoplay(n = 25) {
       const s = get();
-      if (s.phase !== 'idle' || s.freeSpins) return;
+      if (s.phase !== 'idle' || s.freeSpins || s.realityCheckOpen) return;
       set({ autoplayLeft: n - 1 });
       s.spin();
     },
@@ -394,7 +416,7 @@ export const useGame = create<GameState>()((set, get) => {
 
     bonusBuy() {
       const s = get();
-      if (s.phase !== 'idle' || s.freeSpins) return;
+      if (s.phase !== 'idle' || s.freeSpins || s.realityCheckOpen) return;
       const cost = r2(s.bet * BONUS_BUY_COST_X);
       if (s.balance + 1e-9 < cost) return;
       if (limitBlocks(cost)) return;
@@ -443,6 +465,10 @@ export const useGame = create<GameState>()((set, get) => {
     },
 
     resetSession() {
+      const s = get();
+      if (s.phase !== 'idle' || s.freeSpins || s.realityCheckOpen) return;
+      // resetting stats would zero the counted loss and bypass an active limit
+      if (s.limit.current != null || s.limit.pending) return;
       set({
         balance: START_BALANCE,
         bet: DEFAULT_BET,
@@ -450,7 +476,6 @@ export const useGame = create<GameState>()((set, get) => {
         lastWin: 0,
         winAmount: 0,
         autoplayLeft: 0,
-        limit: { current: null, pending: null },
         lastRealityCheckAt: Date.now(),
       });
     },
