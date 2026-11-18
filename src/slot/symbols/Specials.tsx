@@ -101,7 +101,12 @@ export function Coin({ label = '' }: { label?: string }) {
       <circle cx="50" cy="50" r="35.5" fill="url(#sf-coin-face)" />
       <circle cx="50" cy="50" r="35.5" fill="none" stroke="#fff6c2" strokeWidth="1.3" opacity="0.85" />
       <circle cx="50" cy="50" r="31" fill="none" stroke="#b06a00" strokeWidth="0.9" opacity="0.55" />
-      <polygon points={pts(starPoints(50, 31, 10.5, 4.4, 5))} fill="url(#sf-gold-hi)" stroke="#a65e00" strokeWidth="0.9" strokeLinejoin="round" />
+      <g className={s.glint}>
+        <polygon points={pts(starPoints(50, 31, 10.5, 4.4, 5))} fill="url(#sf-gold-hi)" stroke="#a65e00" strokeWidth="0.9" strokeLinejoin="round" />
+      </g>
+      <g className={s.coinShine}>
+        <circle cx="50" cy="50" r="38" fill="none" stroke="#fffbe6" strokeWidth="2.4" strokeDasharray="22 216" strokeLinecap="round" opacity="0.9" />
+      </g>
       <text
         x="50"
         y={62 + size * 0.28}
@@ -147,7 +152,15 @@ export function Collect() {
       {WELL.map((e, i) => (
         <ellipse key={i} cx="50" cy={e.cy} rx={e.rx} ry={e.ry} fill="none" stroke="#34e7ff" strokeWidth="1.3" opacity={e.o} />
       ))}
-      <circle cx="50" cy="58" r="9" fill="url(#sf-well-core)" filter="url(#sf-glow)" />
+      {/* inward-falling ripples: the "gravity pull" (always on, faster in win) */}
+      {[0, 1, 2].map((i) => (
+        <g key={`rip${i}`} className={s.ripple} style={{ animationDelay: `${i * -0.6}s` }}>
+          <ellipse cx="50" cy="40" rx="34" ry="11.5" fill="none" stroke="#bff8ff" strokeWidth="1.6" />
+        </g>
+      ))}
+      <g className={s.corePulse}>
+        <circle cx="50" cy="58" r="9" fill="url(#sf-well-core)" filter="url(#sf-glow)" />
+      </g>
       <g transform="translate(50 46) scale(1 0.42)">
         <g className={s.orbit}>
           <circle cx="27" cy="0" r="4.6" fill="url(#sf-gold-hi)" stroke="#a65e00" strokeWidth="0.8" />

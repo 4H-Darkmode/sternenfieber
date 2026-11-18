@@ -129,6 +129,10 @@
 .still .pulse,
 .still .ring,
 .still .twinkle,
+.still .ripple,
+.still .corePulse,
+:global([data-spinning='true']) .ripple,
+:global([data-spinning='true']) .corePulse,
 :global([data-spinning='true']) .spinSlow,
 :global([data-spinning='true']) .spinRev,
 :global([data-spinning='true']) .orbit,
@@ -136,6 +140,197 @@
 :global([data-spinning='true']) .ring,
 :global([data-spinning='true']) .twinkle {
   animation-play-state: paused;
+}
+
+/* ── always-on loops added for the collector ───────────── */
+.ripple,
+.corePulse {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+}
+
+.ripple {
+  opacity: 0;
+  animation: ripple 1.8s ease-in infinite;
+}
+
+.corePulse {
+  animation: corePulse 1.2s ease-in-out infinite alternate;
+}
+
+/* ── win-only loops (never run inside spinning strips) ─── */
+.sparkle,
+.wobble,
+.tail,
+.headPulse,
+.wiggle,
+.gem,
+.glint {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+}
+
+.flame {
+  transform-box: fill-box;
+  transform-origin: 50% 0%;
+}
+
+.coinShine {
+  opacity: 0;
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+}
+
+.win .sparkle {
+  animation: sparkleWin 0.55s ease-in-out infinite alternate;
+}
+
+.win .wobble {
+  animation: wobble 1.3s ease-in-out infinite;
+}
+
+.win .tail {
+  animation: tailFlicker 0.22s ease-in-out infinite alternate;
+}
+
+.win .headPulse {
+  animation: headPulse 0.45s ease-in-out infinite alternate;
+}
+
+.win .flame {
+  animation: flame 0.11s ease-in-out infinite alternate;
+}
+
+.win .wiggle {
+  animation: wiggle 0.95s ease-in-out infinite;
+}
+
+.win .gem {
+  animation: gemFlash 0.95s ease-in-out infinite;
+}
+
+.win .glint {
+  animation: spin 1.5s linear infinite;
+}
+
+.win .coinShine {
+  opacity: 1;
+  animation: spin 1.2s linear infinite;
+}
+
+.win .orbit {
+  animation-duration: 1.2s;
+}
+
+.win .ripple {
+  animation-duration: 0.9s;
+}
+
+.win .corePulse {
+  animation-duration: 0.32s;
+}
+
+.win .pulse {
+  animation-duration: 0.6s;
+}
+
+.win .ring {
+  animation-duration: 0.9s;
+}
+
+.win .twinkle {
+  animation-duration: 0.5s;
+}
+
+@keyframes ripple {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(1);
+  }
+  20% {
+    opacity: 0.85;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(17px) scale(0.15);
+  }
+}
+
+@keyframes corePulse {
+  from {
+    transform: scale(0.85);
+  }
+  to {
+    transform: scale(1.3);
+  }
+}
+
+@keyframes sparkleWin {
+  from {
+    opacity: 0.3;
+    transform: scale(0.5) rotate(0deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.5) rotate(45deg);
+  }
+}
+
+@keyframes wobble {
+  0%,
+  100% {
+    transform: rotate(-7deg) scale(1);
+  }
+  50% {
+    transform: rotate(7deg) scale(1.05);
+  }
+}
+
+@keyframes tailFlicker {
+  from {
+    opacity: 0.6;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes headPulse {
+  from {
+    transform: scale(0.85);
+  }
+  to {
+    transform: scale(1.25);
+  }
+}
+
+@keyframes flame {
+  from {
+    transform: scale(0.9, 0.8);
+  }
+  to {
+    transform: scale(1.06, 1.3);
+  }
+}
+
+@keyframes wiggle {
+  0%,
+  100% {
+    transform: rotate(-9deg) scale(1);
+  }
+  50% {
+    transform: rotate(9deg) scale(1.06);
+  }
+}
+
+@keyframes gemFlash {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  45% {
+    filter: brightness(1.5);
+  }
 }
 
 /* motion blur while spinning: vertical-only SVG blur + stretch */

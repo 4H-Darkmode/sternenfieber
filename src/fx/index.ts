@@ -6,3 +6,5 @@ export { default as WinCounter, type WinCounterProps } from './WinCounter';
 export { fx, type BurstKind } from './particles';
 export { shake } from './shake';
 export { prefersReducedMotion, useReducedMotion } from './motion';
+export { default as CollectOverlay } from './CollectOverlay';
+export { default as ScatterCelebration } from './ScatterCelebration';

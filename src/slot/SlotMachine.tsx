@@ -3,6 +3,8 @@ import { bus } from '../core/events';
 import { REELS, ROWS, type Cell, type Pos, type SpinResult, type SymbolId } from '../engine/types';
 import { PAYLINES } from '../engine/paylines';
 import PaylineOverlay from '../fx/PaylineOverlay';
+import CollectOverlay from '../fx/CollectOverlay';
+import ScatterCelebration from '../fx/ScatterCelebration';
 import { fx } from '../fx/particles';
 import { shake } from '../fx/shake';
 import { prefersReducedMotion } from '../fx/motion';
@@ -52,6 +54,7 @@ interface Run {
   done: boolean;
 }
 
+const NO_CELLS: ReadonlySet<string> = new Set();
 const range = (n: number) => Array.from({ length: n }, (_, i) => i);
 
 export default function SlotMachine(props: SlotMachineProps) {
@@ -292,6 +295,18 @@ export default function SlotMachine(props: SlotMachineProps) {
 
   // ── presentation state ───────────────────────────────────────────────
   const shownHL = highlight && !spinning && highlight.positions.length ? highlight : null;
+
+  // coins already pulled into the collector (dimmed in the win layer)
+  const [collected, setCollected] = useState<ReadonlySet<string>>(NO_CELLS);
+  useEffect(() => setCollected(NO_CELLS), [highlight]);
+  const onCollected = useCallback((key: string) => {
+    setCollected((prev) => {
+      if (prev.has(key)) return prev;
+      const next = new Set(prev);
+      next.add(key);
+      return next;
+    });
+  }, []);
   const winSet = useMemo(
     () => (shownHL ? new Set(shownHL.positions.map(([r, row]) => r * ROWS + row)) : null),
     [shownHL],
@@ -366,19 +381,24 @@ export default function SlotMachine(props: SlotMachineProps) {
                 {shownHL.positions.map(([r, row]) => {
                   const cell = grid[r]?.[row];
                   if (!cell) return null;
+                  const key = `${r}-${row}`;
+                  const done = collected.has(key);
                   return (
                     <div
-                      key={`${r}-${row}`}
-                      className={s.winCell}
+                      key={key}
+                      data-cell={key}
+                      className={`${s.winCell} ${done ? s.collectedCell : ''}`}
                       style={{ left: `${r * (100 / REELS)}%`, top: `${row * (100 / ROWS)}%` }}
                     >
-                      <SymbolView cell={cell} bet={bet} state="win" />
+                      <SymbolView cell={cell} bet={bet} state={done ? 'dim' : 'win'} />
                     </div>
                   );
                 })}
               </div>
             )}
             <PaylineOverlay highlight={shownHL} />
+            <ScatterCelebration gridRef={reelsRef} shakeRef={machineRef} turbo={turbo} spinning={spinning} />
+            <CollectOverlay gridRef={reelsRef} spinning={spinning} onCollected={onCollected} />
           </div>
           <div className={s.glass} aria-hidden="true" />
         </div>

@@ -278,6 +278,13 @@
   position: absolute;
   width: 20%;
   height: calc(100% / 3);
+  transition: transform 0.3s var(--ease-out), opacity 0.3s var(--ease-out);
+}
+
+/* coin already pulled into the collector */
+.collectedCell {
+  transform: scale(0.7);
+  opacity: 0.55;
 }
 
 /* glass reflection over the screen */

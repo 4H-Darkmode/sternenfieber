@@ -1,4 +1,5 @@
 /** Small shared SVG building blocks for symbol art (viewBox 0 0 100 100). */
+import st from '../Symbol.module.css';
 
 export type Pt = readonly [number, number];
 
@@ -21,7 +22,9 @@ export function Sparkle({ x, y, r, opacity = 1, className }: { x: number; y: num
   const d = `M${x},${y - r} Q${x + k},${y - k} ${x + r},${y} Q${x + k},${y + k} ${x},${y + r} Q${x - k},${y + k} ${x - r},${y} Q${x - k},${y - k} ${x},${y - r}Z`;
   return (
     <g className={className} opacity={opacity}>
-      <path d={d} fill="#ffffff" filter="url(#sf-glow)" />
+      <g className={st.sparkle} style={{ animationDelay: `${((x * 7 + y * 3) % 10) * -0.07}s` }}>
+        <path d={d} fill="#ffffff" filter="url(#sf-glow)" />
+      </g>
     </g>
   );
 }

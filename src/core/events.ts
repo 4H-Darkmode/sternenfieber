@@ -4,7 +4,7 @@
  * The store/controller emits presentation-level events.
  * Audio, FX and reveal mode only SUBSCRIBE.
  */
-import type { Cell, LineWin, NearMissInfo, SpinMode, SpinResult, WinTier } from '../engine/types';
+import type { Cell, LineWin, NearMissInfo, Pos, SpinMode, SpinResult, WinTier } from '../engine/types';
 
 export type GameEvents = {
   // ── UI ──────────────────────────────────────────────
@@ -29,7 +29,22 @@ export type GameEvents = {
   noWin: { result: SpinResult };
   winPresentStart: { result: SpinResult; amount: number; tier: WinTier };
   lineWinShow: { win: LineWin; index: number };
-  coinCollectStart: { total: number; coinCount: number };
+  /**
+   * Collector picks up coins. Visuals animate each coin flying into the
+   * collector (in order) and MUST emit `coinCollectEnd` when done.
+   */
+  coinCollectStart: {
+    total: number;
+    coinCount: number;
+    coinPositions: Pos[];
+    collectPositions: Pos[];
+    /** credits per coin, same order as coinPositions */
+    coinValues: number[];
+    turbo: boolean;
+  };
+  coinCollectEnd: { total: number };
+  /** 3+ scatters: highlight them (free-spins trigger / scatter pay) */
+  scatterWinShow: { positions: Pos[]; count: number; pay: number };
   /** credit counter rolls up; audio plays a coin-rollup loop for durationMs */
   rollupStart: { from: number; to: number; durationMs: number };
   rollupEnd: { amount: number };

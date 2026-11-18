@@ -1,3 +1,4 @@
+import st from '../Symbol.module.css';
 import { CRYSTALS, type CrystalName } from './defs';
 import { Facet, Sparkle, pts, type Pt } from './parts';
 
@@ -28,6 +29,7 @@ export function Ruby() {
   return (
     <g>
       <ellipse cx="50" cy="52" rx="38" ry="34" fill={`url(#sf-${c}-core)`} opacity="0.35" filter="url(#sf-blur-lg)" />
+      <g className={st.gem}>
       <g filter="url(#sf-glow)">
         {crown.map(([p, s], i) => <Facet key={`c${i}`} p={p} s={s} fill={body(c)} />)}
         {pav.map(([p, s], i) => <Facet key={`p${i}`} p={p} s={s} fill={face(c)} />)}
@@ -36,6 +38,7 @@ export function Ruby() {
         <polygon points={pts([[56, 37], G[3], B])} fill="#ffffff" opacity="0.08" />
         <polygon points={pts([T[0], T[3], G[4], B, G[0]])} fill="none" stroke={CRYSTALS[c].edge} strokeWidth="1.3" strokeLinejoin="round" opacity="0.85" />
         <line x1={G[0][0]} y1={G[0][1]} x2={G[4][0]} y2={G[4][1]} stroke={CRYSTALS[c].edge} strokeWidth="1" opacity="0.7" />
+      </g>
       </g>
       <Sparkle x={36} y={24} r={8} />
       <Sparkle x={66} y={58} r={4} opacity={0.75} />
@@ -53,6 +56,7 @@ export function Emerald() {
   return (
     <g>
       <rect x="14" y="14" width="72" height="72" rx="18" fill={`url(#sf-${c}-core)`} opacity="0.35" filter="url(#sf-blur-lg)" />
+      <g className={st.gem}>
       <g filter="url(#sf-glow)">
         <polygon points={pts(O)} fill={body(c)} />
         {O.map((_, k) => {
@@ -68,6 +72,7 @@ export function Emerald() {
         <polygon points={pts([[60, 28], [64, 28], [28, 64], [28, 60]])} fill="#ffffff" opacity="0.16" />
         <polygon points={pts(O)} fill="none" stroke={CRYSTALS[c].edge} strokeWidth="1.3" strokeLinejoin="round" opacity="0.85" />
         <polygon points={pts(I)} fill="none" stroke={CRYSTALS[c].edge} strokeWidth="0.8" opacity="0.55" />
+      </g>
       </g>
       <Sparkle x={30} y={22} r={8} />
       <Sparkle x={68} y={68} r={4} opacity={0.7} />
@@ -96,6 +101,7 @@ export function Sapphire() {
   return (
     <g>
       <ellipse cx="50" cy="50" rx="30" ry="44" fill={`url(#sf-${c}-core)`} opacity="0.4" filter="url(#sf-blur-lg)" />
+      <g className={st.gem}>
       <g filter="url(#sf-glow)">
         {faces.map(([p, s, f], i) => <Facet key={i} p={p} s={s} fill={f} />)}
         <polygon points={pts([[43, 36], [48, 36], [48, 71], [43, 71]])} fill="#ffffff" opacity="0.32" />
@@ -103,6 +109,7 @@ export function Sapphire() {
         <polygon points={pts([top, uR, lR, bot, lL, uL])} fill="none" stroke={CRYSTALS[c].edge} strokeWidth="1.3" strokeLinejoin="round" opacity="0.85" />
         <polyline points={pts([uL, uFL, uFR, uR])} fill="none" stroke={CRYSTALS[c].edge} strokeWidth="0.8" opacity="0.6" />
         <polyline points={pts([lL, lFL, lFR, lR])} fill="none" stroke={CRYSTALS[c].edge} strokeWidth="0.8" opacity="0.45" />
+      </g>
       </g>
       <Sparkle x={42} y={22} r={8} />
       <Sparkle x={66} y={80} r={4} opacity={0.6} />
@@ -133,6 +140,7 @@ export function Amethyst() {
   return (
     <g>
       <ellipse cx="50" cy="56" rx="38" ry="36" fill={`url(#sf-${c}-core)`} opacity="0.35" filter="url(#sf-blur-lg)" />
+      <g className={st.gem}>
       <g filter="url(#sf-glow)">
         <Shard c={c} cx={30} top={34} w={8} base={82} angle={-24} />
         <Shard c={c} cx={70} top={30} w={9} base={82} angle={22} />
@@ -144,6 +152,7 @@ export function Amethyst() {
           strokeWidth="1.2"
         />
         <path d="M20,84 Q30,80 40,85 Q50,81 60,86 Q72,81 80,85" fill="none" stroke="#c06bff" strokeWidth="1" opacity="0.6" />
+      </g>
       </g>
       <Sparkle x={44} y={18} r={8} />
       <Sparkle x={76} y={40} r={4} opacity={0.75} />

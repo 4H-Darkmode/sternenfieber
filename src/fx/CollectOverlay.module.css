@@ -1,0 +1,118 @@
+.root {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 8;
+}
+
+.svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.beam path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+}
+
+.glowWide {
+  stroke: #ffcf4a;
+  stroke-width: 22;
+  opacity: 0.16;
+}
+
+.glow {
+  stroke: #ffb23d;
+  stroke-width: 10;
+  opacity: 0.5;
+}
+
+.main {
+  stroke: #ffd84a;
+  stroke-width: 4.5;
+}
+
+.core {
+  stroke: #fffbe6;
+  stroke-width: 1.8;
+}
+
+.ring {
+  fill: none;
+  stroke: #ffe9a8;
+  stroke-width: 4;
+  opacity: 0;
+}
+
+.chip {
+  opacity: 0;
+}
+
+.chipBg {
+  fill: url(#sf-gold-hi);
+  stroke: #8a4f00;
+  stroke-width: 1.5;
+  filter: drop-shadow(0 0 6px rgba(255, 207, 74, 0.9));
+}
+
+.chipText {
+  font-family: var(--f-display);
+  font-size: 15px;
+  fill: #3a1500;
+}
+
+.counterPos {
+  position: absolute;
+  transform: translate(-50%, -50%);
+}
+
+.counter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3px 10px 4px;
+  border-radius: 999px;
+  white-space: nowrap;
+  background: linear-gradient(180deg, rgba(42, 23, 96, 0.95), rgba(14, 8, 34, 0.95));
+  border: 2px solid rgba(255, 207, 74, 0.9);
+  box-shadow: 0 0 14px rgba(255, 207, 74, 0.6), 0 0 30px rgba(255, 61, 184, 0.35);
+  will-change: transform;
+}
+
+.counterLabel {
+  font-size: clamp(7px, 1.4cqi, 10px);
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #ffd1f0;
+}
+
+.counterValue {
+  font-family: var(--f-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: clamp(13px, 3cqi, 22px);
+  line-height: 1.1;
+  color: #fff6c2;
+  text-shadow: 0 0 10px var(--c-gold-glow);
+}
+
+.root[data-final='true'] .counter {
+  border-color: #fffbe6;
+  background: linear-gradient(180deg, #ffd84a, #e8961a);
+  box-shadow: 0 0 22px rgba(255, 207, 74, 0.95), 0 0 50px rgba(255, 61, 184, 0.5);
+}
+
+.root[data-final='true'] .counterLabel {
+  color: #5a2a00;
+}
+
+.root[data-final='true'] .counterValue {
+  color: #3a1500;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+}

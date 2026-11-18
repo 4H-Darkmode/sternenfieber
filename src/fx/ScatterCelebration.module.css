@@ -1,0 +1,155 @@
+.svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.under {
+  z-index: 4;
+}
+
+.over {
+  z-index: 7;
+}
+
+.rays,
+.raysSpin {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+}
+
+.rays {
+  animation: raysIn 1.5s var(--ease-out) both;
+}
+
+.raysSpin {
+  animation: raysSpin 3s linear infinite;
+}
+
+.wave {
+  fill: none;
+  stroke: #bff8ff;
+  stroke-width: 3;
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  opacity: 0;
+  animation: wave 0.9s ease-out both;
+}
+
+.beam {
+  opacity: 0;
+  animation: beamIn 1.5s linear both;
+}
+
+.beam polyline {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.beamGlow {
+  stroke: #ff3db8;
+  stroke-width: 12;
+  opacity: 0.35;
+}
+
+.beamMain {
+  stroke: #34e7ff;
+  stroke-width: 4;
+}
+
+.beamCore {
+  stroke: #ffffff;
+  stroke-width: 1.6;
+}
+
+.beamFlow {
+  stroke: #ffffff;
+  stroke-width: 3;
+  stroke-dasharray: 0.06 0.1;
+  animation: flow 0.4s linear infinite;
+}
+
+.beam .beamMain,
+.beam .beamCore {
+  animation: crackle 0.09s steps(2, end) infinite;
+}
+
+.svg[data-turbo='true'] .rays,
+.svg[data-turbo='true'] ~ .over .beam {
+  animation-duration: 0.7s;
+}
+
+@keyframes raysIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+  20% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  75% {
+    opacity: 0.85;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.15);
+  }
+}
+
+@keyframes raysSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes wave {
+  0% {
+    opacity: 0.95;
+    transform: scale(0.3);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.6);
+  }
+}
+
+@keyframes beamIn {
+  0% {
+    opacity: 0;
+  }
+  12%,
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes flow {
+  to {
+    stroke-dashoffset: -0.16;
+  }
+}
+
+@keyframes crackle {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .beamFlow,
+  .raysSpin {
+    animation: none;
+  }
+}

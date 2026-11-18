@@ -9,6 +9,7 @@ import {
   BONUS_BUY_COST_X,
   DEFAULT_BET,
   FREE_SPINS_AWARD,
+  getScatterWin,
   START_BALANCE,
   spin as engineSpin,
   type ForceOutcome,
@@ -216,10 +217,29 @@ export const useGame = create<GameState>()((set, get) => {
       }
       set((s) => ({ stats: { ...s.stats, celebratedCount: s.stats.celebratedCount + 1 } }));
 
+      if (r.scatterPositions.length >= 3) {
+        set({ highlight: { positions: r.scatterPositions } });
+        bus.emit('scatterWinShow', {
+          positions: r.scatterPositions,
+          count: r.scatterPositions.length,
+          pay: getScatterWin(r),
+        });
+        await sleep(turbo ? 500 : 1200);
+      }
+
       if (r.coinCollect) {
-        set({ highlight: { positions: [...r.coinCollect.coinPositions, ...r.coinCollect.collectPositions] } });
-        bus.emit('coinCollectStart', { total: r.coinCollect.total, coinCount: r.coinCollect.coinPositions.length });
-        await sleep(turbo ? 500 : 1300);
+        const cc = r.coinCollect;
+        set({ highlight: { positions: [...cc.coinPositions, ...cc.collectPositions] } });
+        const collectEnd = waitFor('coinCollectEnd', 20000);
+        bus.emit('coinCollectStart', {
+          total: cc.total,
+          coinCount: cc.coinPositions.length,
+          coinPositions: cc.coinPositions,
+          collectPositions: cc.collectPositions,
+          coinValues: cc.coinPositions.map(([x, y]) => r2((r.grid[x][y].coinValue ?? 0) * r.bet)),
+          turbo,
+        });
+        await collectEnd;
       }
 
       const big = r.winTier === 'big' || r.winTier === 'mega' || r.winTier === 'epic';
