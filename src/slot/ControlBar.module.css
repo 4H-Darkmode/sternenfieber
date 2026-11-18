@@ -471,3 +471,13 @@
     transform: translateX(120%);
   }
 }
+
+/* session net (gewinn / verlust) */
+.net[data-tone='loss'] {
+  color: var(--c-danger);
+  text-shadow: 0 0 12px rgba(255, 77, 94, 0.35);
+}
+.net[data-tone='win'] {
+  color: var(--c-win);
+  text-shadow: 0 0 12px rgba(93, 255, 158, 0.35);
+}

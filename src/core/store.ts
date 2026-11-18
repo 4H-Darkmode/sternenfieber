@@ -273,7 +273,20 @@ export const useGame = create<GameState>()((set, get) => {
         }));
       }
       set((s) => ({ stats: { ...s.stats, totalReturned: r2(s.stats.totalReturned + r.totalWin) } }));
-      await sleep(turbo ? 150 : 500);
+      if (!inFs) {
+        // honest summary: what the win really means against the bet
+        const summaryEnd = waitFor('winSummaryEnd', 8000);
+        bus.emit('winSummaryStart', {
+          amount: r.totalWin,
+          bet: r.bet,
+          net: r2(r.totalWin - r.bet),
+          isLDW: r.isLDW,
+          turbo: turbo || get().autoplayLeft > 0,
+        });
+        await summaryEnd;
+      } else {
+        await sleep(turbo ? 150 : 500);
+      }
     } else {
       bus.emit('noWin', { result: r });
       if (!inFs) set({ lastWin: 0 });

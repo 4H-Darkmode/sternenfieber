@@ -38,6 +38,9 @@ export type GameEvents = {
   bigWinTierUp: { tier: Exclude<WinTier, 'none' | 'small'> };
   bigWinEnd: { amount: number };
   winPresentEnd: { amount: number };
+  /** honest summary overlay after a base-game win: amount vs. bet */
+  winSummaryStart: { amount: number; bet: number; net: number; isLDW: boolean; turbo: boolean };
+  winSummaryEnd: Record<string, never>;
 
   // ── Psychology markers (consumed by reveal mode + optional fx) ─
   ldw: { win: number; bet: number };

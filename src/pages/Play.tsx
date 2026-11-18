@@ -4,6 +4,7 @@ import { bus, type GameEvents } from '../core/events';
 import { lossSoFar, useGame } from '../core/store';
 import { BET_STEPS, BONUS_BUY_COST_X, START_BALANCE, getStrip } from '../engine';
 import { BigWinOverlay, FreeSpinsOverlays, ParticleCanvas } from '../fx';
+import WinSummaryOverlay from '../fx/WinSummaryOverlay';
 import {
   CalloutFeed,
   CashoutSludge,
@@ -92,20 +93,22 @@ export default function Play() {
 
         <div className={styles.stage}>
           <div className={styles.machine}>
-            <SlotMachine
-              result={g.result}
-              spinId={g.spinId}
-              quickStopId={g.quickStopId}
-              turbo={g.turbo}
-              bet={g.freeSpins?.bet ?? g.bet}
-              highlight={g.highlight}
-              onAllStopped={g.onReelsStopped}
-              fillerFor={fillerFor}
-            />
+            <div className={styles.slotWrap}>
+              <SlotMachine
+                result={g.result}
+                spinId={g.spinId}
+                quickStopId={g.quickStopId}
+                turbo={g.turbo}
+                bet={g.freeSpins?.bet ?? g.bet}
+                highlight={g.highlight}
+                onAllStopped={g.onReelsStopped}
+                fillerFor={fillerFor}
+              />
+              <WinSummaryOverlay reveal={g.reveal} />
+            </div>
             <ControlBar
               balance={g.balance}
               bet={g.bet}
-              lastWin={g.lastWin}
               spinning={spinning}
               canSpin={(idle && g.balance >= g.bet && !g.freeSpins) || spinning}
               onSpin={g.spin}
@@ -123,8 +126,7 @@ export default function Play() {
               freeSpins={g.freeSpins ? { remaining: g.freeSpins.remaining, total: g.freeSpins.total } : null}
               muted={audio.muted}
               onToggleMute={audio.toggleMuted}
-              winAmount={g.freeSpins ? g.freeSpins.totalWin : g.winAmount}
-              winDurationMs={g.winDurationMs}
+              sessionNet={g.stats.totalReturned - g.stats.totalWagered}
             />
           </div>
 
@@ -133,9 +135,7 @@ export default function Play() {
               <CalloutFeed items={callouts} onDismiss={(id) => setCallouts((l) => l.filter((c) => c.id !== id))} />
               <LimitPanel
                 currentLimit={g.limit.current}
-                pendingLimit={
-                  g.limit.pending && Number.isFinite(g.limit.pending.value) ? g.limit.pending : null
-                }
+                pendingLimit={g.limit.pending && Number.isFinite(g.limit.pending.value) ? g.limit.pending : null}
                 onSetLimit={g.setLimit}
                 lossSoFar={lossSoFar(g.stats)}
               />
@@ -147,7 +147,6 @@ export default function Play() {
             </aside>
           )}
         </div>
-
       </main>
 
       <SiteFooter variant="casino" />

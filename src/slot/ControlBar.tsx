@@ -1,13 +1,12 @@
 import { useEffect, useRef } from 'react';
 import { bus } from '../core/events';
-import WinCounter from '../fx/WinCounter';
+import NetCounter from './NetCounter';
 import { formatCredits } from './format';
 import s from './ControlBar.module.css';
 
 export interface ControlBarProps {
   balance: number;
   bet: number;
-  lastWin: number;
   spinning: boolean;
   canSpin: boolean;
   /** called for SPIN and – while spinning – for STOP (slam stop) */
@@ -26,8 +25,8 @@ export interface ControlBarProps {
   freeSpins: { remaining: number; total: number } | null;
   muted: boolean;
   onToggleMute(): void;
-  winAmount: number;
-  winDurationMs: number;
+  /** session result: returned − wagered (negative = loss) */
+  sessionNet: number;
 }
 
 const click = (kind: 'spin' | 'bet' | 'menu' | 'toggle' | 'generic') => bus.emit('buttonClick', { kind });
@@ -61,8 +60,8 @@ export default function ControlBar(p: ControlBarProps) {
   }, []);
 
   const {
-    balance, bet, lastWin, spinning, canSpin, canBetUp, canBetDown, turbo, autoplayLeft,
-    bonusBuyCost, freeSpins, muted, winAmount, winDurationMs,
+    balance, bet, spinning, canSpin, canBetUp, canBetDown, turbo, autoplayLeft,
+    bonusBuyCost, freeSpins, muted, sessionNet,
   } = p;
   const spinDisabled = !spinning && !canSpin;
   const auto = autoplayLeft > 0;
@@ -159,10 +158,9 @@ export default function ControlBar(p: ControlBarProps) {
         </div>
 
         <div className={`${s.stat} ${s.win}`}>
-          <WinCounter amount={winAmount} durationMs={winDurationMs} label="Gewinn" className={s.winCounter} />
-          <span className={s.unit}>
-            {winAmount <= 0 && lastWin > 0 ? `Zuletzt ${formatCredits(lastWin)}` : 'Credits'}
-          </span>
+          <span className={s.label}>Gewinn / Verlust</span>
+          <NetCounter value={sessionNet} className={`${s.value} ${s.net}`} />
+          <span className={s.unit}>Seit Start</span>
         </div>
 
         <div className={s.tools}>
