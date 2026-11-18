@@ -555,3 +555,75 @@
   font-size: 0.9rem !important;
   line-height: 1.5 !important;
 }
+
+/* conclusion box */
+.fazit {
+  margin: 4px 0 18px;
+  padding: 18px 18px 20px;
+  border-radius: 4px;
+  background: var(--k-ink);
+  color: var(--k-paper);
+}
+
+.fazit h3 {
+  margin: 0 0 6px;
+  font-family: var(--f-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #ff8a90;
+}
+
+.section .fazit p {
+  margin: 0 0 14px;
+  font-size: 1.02rem;
+}
+
+.sourceLine {
+  font-size: 0.8rem !important;
+  font-style: italic;
+  color: var(--k-ink-dim);
+}
+
+/* compact one-line list (About) */
+.lineList {
+  list-style: none;
+  margin: 10px 0 16px !important;
+  padding: 0 !important;
+  border-top: 1px solid var(--k-rule);
+}
+
+.section .lineList li {
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  gap: 10px;
+  margin: 0;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--k-rule);
+  font-size: 0.97rem;
+  line-height: 1.5;
+}
+
+.lineNum {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 2px solid var(--k-red);
+  border-radius: 50%;
+  font-family: var(--f-mono);
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--k-red);
+}
+
+.lineThis {
+  background: var(--k-red-soft);
+}
+
+.sourceGroup {
+  margin: 22px 0 6px;
+  font-size: 0.95rem;
+  font-weight: 800;
+}

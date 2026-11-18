@@ -15,8 +15,8 @@ export default function NestedCircles() {
         <svg viewBox="0 0 400 400" className={s.svg} role="img" aria-labelledby={titleId} aria-describedby={descId}>
           <title id={titleId}>Drei Begriffe als Schichten: Sludge liegt in Dark Patterns, beides liegt in Dark Nudges.</title>
           <desc id={descId}>
-            Äusserer Kreis: Dark Nudges, Beispiel Glücksspiel als harmloser Spass. Mittlerer Kreis: Dark Patterns, Beispiel hoher
-            vorgeschlagener Einsatz. Innerer Kreis: Sludge, Beispiel langsame Auszahlung.
+            Äusserer Kreis: Dark Nudges, Beispiel Glücksspiel als harmloser Spass für die Freizeit. Mittlerer Kreis: Dark Patterns,
+            Beispiel hohe vorgeschlagene Beträge. Innerer Kreis: Sludge, Beispiel Auszahlung dauert mehrere Arbeitstage.
           </desc>
 
           <circle cx={cx} cy={200} r={192} className={s.outer} />
@@ -28,7 +28,7 @@ export default function NestedCircles() {
             DARK NUDGES
           </text>
           <text x={cx} y={60} className={s.example}>
-            «Glücksspiel ist harmloser Spass»
+            Glücksspiel als «harmloser Spass»
           </text>
 
           <text x={cx} y={128} className={s.label}>
@@ -45,7 +45,7 @@ export default function NestedCircles() {
             Auszahlung dauert
           </text>
           <text x={cx} y={302} className={s.example}>
-            Werktage
+            Arbeitstage
           </text>
 
           {/* red-pen circle around the default effect: it is BOTH pattern and nudge */}
@@ -59,35 +59,26 @@ export default function NestedCircles() {
                 <span className={`${s.dot} ${s.dotInner}`} aria-hidden="true" />
                 Sludge – die engste Schicht
               </dt>
-              <dd>
-                Schädliche Hürden, die hilfreiche Handlungen erschweren. Beispiel: Einzahlen geht in Sekunden, Auszahlen dauert
-                Werktage oder ist an Bedingungen geknüpft.
-              </dd>
+              <dd>Schädliche Hürden, die hilfreiche Handlungen erschweren – z. B. Auszahlungen, die mehrere Arbeitstage dauern.</dd>
             </div>
             <div className={s.item}>
               <dt>
                 <span className={`${s.dot} ${s.dotMiddle}`} aria-hidden="true" />
                 Dark Patterns – umfassen Sludge
               </dt>
-              <dd>
-                Täuschendes Interface-Design, das dich gezielt in eine Richtung lenkt. Beispiel: hohe vorgeschlagene Einzahlungs-
-                und Einsatzbeträge – die Option, die für das Casino profitabler ist.
-              </dd>
+              <dd>Täuschendes Interface-Design, das gezielt in eine Richtung lenkt – z. B. hohe vorgeschlagene Einsatzbeträge.</dd>
             </div>
             <div className={s.item}>
               <dt>
                 <span className={`${s.dot} ${s.dotOuter}`} aria-hidden="true" />
                 Dark Nudges – umfassen beides
               </dt>
-              <dd>
-                Alle Formen von täuschendem Design, die typische Denkfehler (kognitive Verzerrungen) ausnutzen. Beispiel: Glücksspiel
-                als harmloser Freizeitspass darstellen.
-              </dd>
+              <dd>Alle Formen von täuschendem Design, die typische Denkfehler ausnutzen – z. B. Glücksspiel als harmloser Spass.</dd>
             </div>
           </dl>
           <p className={s.penNote}>
             <span className={s.penMark} aria-hidden="true" />
-            Der hohe Vorschlagsbetrag nutzt den Default-Effekt aus: Er ist gleichzeitig Dark Pattern und Dark Nudge.
+            Derselbe hohe Vorschlagsbetrag ist gleichzeitig ein Dark Pattern und ein Dark Nudge (Default-Effekt).
           </p>
           <p className={s.source}>Quelle: Newall (2025), Addiction 120(10), 1916–1923</p>
         </figcaption>

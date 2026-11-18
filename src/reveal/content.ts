@@ -18,44 +18,109 @@ export interface Source {
   short: string;
   full: string;
   url?: string;
+  /** 'list' = Quellenverzeichnis of the paper; 'footnote' = extra links from its footnotes */
+  group: 'list' | 'footnote';
 }
 
+/** Quellenverzeichnis of the paper (alphabetical, as in the paper) + footnote links. */
 export const SOURCES: Source[] = [
+  {
+    id: 'blick-chaos',
+    short: 'Blick',
+    full: 'Blick: Schweizer Spielsperren stürzen Liechtensteins Casinos ins Chaos.',
+    url: 'https://www.blick.ch/politik/schweizer-spielsperren-stuerzen-liechtensteins-casinos-ins-chaos/0hzg4e2',
+    group: 'list',
+  },
+  {
+    id: 'blick-ruin',
+    short: 'Blick',
+    full: 'Blick: Spielsperren treiben Liechtensteiner Casinos in den Ruin.',
+    url: 'https://www.blick.ch/politik/spielsperren-treiben-liechtensteiner-casinos-in-den-ruin/ygvhkht',
+    group: 'list',
+  },
   {
     id: 'bj',
     short: 'BJ, Geldspielgesetz',
     full: 'Bundesamt für Justiz (BJ): Geldspielgesetz.',
     url: 'https://www.bj.admin.ch/de/geldspielgesetz',
+    group: 'list',
   },
   {
     id: 'bundesrat',
     short: 'Bundesrat, Medienmitteilung',
     full: 'Der Bundesrat: Medienmitteilung zum Geldspielgesetz.',
     url: 'https://www.admin.ch/de/nsb?id=79674',
+    group: 'list',
   },
   {
     id: 'esbk',
     short: 'ESBK, Spielbankenabgabe',
     full: 'Eidgenössische Spielbankenkommission (ESBK): Spielbankenabgabe.',
     url: 'https://www.esbk.admin.ch/de/spielbankenabgabe',
+    group: 'list',
+  },
+  {
+    id: 'esbk-gespa',
+    short: 'ESBK & Gespa (2024)',
+    full: 'Eidgenössische Spielbankenkommission (ESBK) & Gespa (2024): Geldspielverhalten in der Schweiz: neue Studie publiziert. Medienmitteilung vom 31.10.2024.',
+    url: 'https://gespa.ch/download/pictures/0c/ohtthwjus5irvm7koxqbyvry0akf5o/2024-10-31_medienmitteilung_sgb_2022_de.pdf',
+    group: 'list',
   },
   {
     id: 'newall',
     short: 'Newall (2025)',
     full:
-      "Newall, P. (2025): Sludge, dark patterns and dark nudges: A taxonomy of online gambling platforms' deceptive design features. Addiction, 120(10), 1916–1923. https://doi.org/10.1111/add.70085",
+      "Newall, P. (2025): Sludge, dark patterns and dark nudges: A taxonomy of online gambling platforms' deceptive design features. Addiction, 120(10), 1916–1923. https://doi.org/10.1111/add.70085.",
     url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC12426356/',
+    group: 'list',
   },
   {
     id: 'notari',
     short: 'Notari et al. (2023)',
     full:
       'Notari, L., Kuendig, H., Vorlet, J., Salvetti, K. & Al Kurdi, C. (2023): Online-Glücks- und Geldspiele im Zeitalter von COVID-19 und legalem Angebot. Forschungsbericht Nr. 148b. Lausanne: GREA, Sucht Schweiz.',
+    group: 'list',
   },
   {
     id: 'scv',
     short: 'SCV (2025)',
     full: 'Schweizer Casino Verband (SCV) (2025): Jahresbericht 2024/25 (veröffentlicht am 10.04.2025).',
+    group: 'list',
+  },
+  {
+    id: 'fedlex-bgs',
+    short: 'BGS, SR 935.51',
+    full: 'Bundesgesetz über Geldspiele (BGS), SR 935.51.',
+    url: 'https://www.fedlex.admin.ch/eli/cc/2018/795/de',
+    group: 'footnote',
+  },
+  {
+    id: 'fedlex-vgs',
+    short: 'VGS, SR 935.511',
+    full: 'Verordnung über Geldspiele (VGS), SR 935.511, Art. 87.',
+    url: 'https://www.fedlex.admin.ch/eli/cc/2018/796/de',
+    group: 'footnote',
+  },
+  {
+    id: 'esbk-tb2025',
+    short: 'ESBK, Tätigkeitsbericht 2025',
+    full: 'ESBK: Medienmitteilung zum Tätigkeitsbericht 2025 (19.06.2026).',
+    url: 'https://www.admin.ch/de/newnsb/JnicL5sO8gIX',
+    group: 'footnote',
+  },
+  {
+    id: 'esbk-illegal',
+    short: 'ESBK, Nicht bewilligte Online-Spiele',
+    full: 'ESBK: Nicht bewilligte Online-Spiele.',
+    url: 'https://www.esbk.admin.ch/de/nicht-bewilligte-online-spiele',
+    group: 'footnote',
+  },
+  {
+    id: 'esbk-schutz',
+    short: 'ESBK, Spielsperre und Sozialschutz',
+    full: 'ESBK: Seiten «Spielsperre» und «Sozialschutz».',
+    url: 'https://www.esbk.admin.ch',
+    group: 'footnote',
   },
 ];
 
