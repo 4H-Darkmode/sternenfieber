@@ -1,0 +1,134 @@
+.overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 6;
+}
+
+.boxWrap {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: boxIn 0.38s var(--ease-back) both;
+}
+
+.box {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 3.2;
+}
+
+.boxGlow {
+  fill: color-mix(in srgb, var(--line) 10%, transparent);
+  stroke: var(--line);
+  stroke-width: 10;
+  opacity: 0.3;
+}
+
+.line polyline {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.glowWide,
+.glow,
+.main,
+.core {
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  animation: draw 0.5s var(--ease-out) forwards;
+}
+
+.glowWide {
+  stroke: var(--line);
+  stroke-width: 18;
+  opacity: 0.18;
+}
+
+.glow {
+  stroke: var(--line);
+  stroke-width: 9;
+  opacity: 0.45;
+}
+
+.main {
+  stroke: var(--line);
+  stroke-width: 4.5;
+}
+
+.core {
+  stroke: #ffffff;
+  stroke-width: 1.6;
+  opacity: 0.9;
+}
+
+.flow {
+  stroke: #ffffff;
+  stroke-width: 3.2;
+  stroke-dasharray: 0.05 0.95;
+  opacity: 0;
+  animation: flow 1.1s linear 0.45s infinite;
+}
+
+.node {
+  fill: #ffffff;
+  stroke: var(--line);
+  stroke-width: 3;
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: nodeIn 0.3s var(--ease-back) both;
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes flow {
+  0% {
+    stroke-dashoffset: 0.05;
+    opacity: 0.95;
+  }
+  100% {
+    stroke-dashoffset: -0.95;
+    opacity: 0.95;
+  }
+}
+
+@keyframes boxIn {
+  from {
+    opacity: 0;
+    transform: scale(0.82);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes nodeIn {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glowWide,
+  .glow,
+  .main,
+  .core {
+    stroke-dashoffset: 0;
+  }
+  .flow {
+    display: none;
+  }
+}

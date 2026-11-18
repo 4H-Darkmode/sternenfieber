@@ -1,0 +1,246 @@
+.sym {
+  position: absolute;
+  inset: 5%;
+  transform-origin: 50% 55%;
+  transition: opacity 0.28s var(--ease-out), transform 0.28s var(--ease-out);
+}
+
+.art {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.artInner {
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+}
+
+/* halo behind the symbol (opacity/transform only → composited) */
+.glow {
+  position: absolute;
+  inset: -6%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--glow) 0%, color-mix(in srgb, var(--glow) 35%, transparent) 45%, transparent 100%);
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 0.3s var(--ease-out);
+  pointer-events: none;
+}
+
+.special .glow {
+  opacity: 0.28;
+}
+
+/* ── states ───────────────────────────────────────────── */
+.idle {
+}
+
+.dim {
+  opacity: 0.26;
+  transform: scale(0.9);
+}
+
+.land {
+  animation: land 0.46s var(--ease-out) both;
+}
+
+.land.special .glow {
+  animation: landFlash 0.7s ease-out both;
+}
+
+.win {
+  z-index: 2;
+  animation: winPulse 0.95s ease-in-out infinite;
+}
+
+.win .glow {
+  animation: glowPulse 0.95s ease-in-out infinite;
+}
+
+.sweep {
+  position: absolute;
+  inset: 2%;
+  border-radius: 22%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.sweepBar {
+  position: absolute;
+  top: -30%;
+  bottom: -30%;
+  left: -70%;
+  width: 45%;
+  background: linear-gradient(100deg, transparent 0%, rgba(255, 255, 255, 0.55) 50%, transparent 100%);
+  transform: skewX(-18deg);
+  animation: sweep 1.9s ease-in-out infinite;
+}
+
+/* ── idle loops inside special symbols ───────────────── */
+.spinSlow,
+.spinRev,
+.orbit,
+.pulse,
+.ring,
+.twinkle {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+}
+
+.spinSlow {
+  animation: spin 10s linear infinite;
+}
+
+.spinRev {
+  animation: spin 16s linear infinite reverse;
+}
+
+.orbit {
+  animation: spin 5s linear infinite;
+}
+
+.pulse {
+  animation: novaPulse 2.2s ease-in-out infinite alternate;
+}
+
+.ring {
+  animation: ringOut 2.2s ease-out infinite;
+}
+
+.twinkle {
+  animation: twinkle 1.6s ease-in-out infinite alternate;
+}
+
+.win .spinSlow {
+  animation-duration: 3s;
+}
+
+.win .spinRev {
+  animation-duration: 5s;
+}
+
+/* paused while the reel spins or when off-screen */
+.still .spinSlow,
+.still .spinRev,
+.still .orbit,
+.still .pulse,
+.still .ring,
+.still .twinkle,
+:global([data-spinning='true']) .spinSlow,
+:global([data-spinning='true']) .spinRev,
+:global([data-spinning='true']) .orbit,
+:global([data-spinning='true']) .pulse,
+:global([data-spinning='true']) .ring,
+:global([data-spinning='true']) .twinkle {
+  animation-play-state: paused;
+}
+
+/* motion blur while spinning: vertical-only SVG blur + stretch */
+:global([data-spinning='true']) .artInner {
+  filter: url(#sf-mblur);
+  transform: scaleY(1.14);
+}
+
+:global([data-spinning='true']) .glow {
+  opacity: 0;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes novaPulse {
+  from {
+    transform: scale(0.9);
+    opacity: 0.75;
+  }
+  to {
+    transform: scale(1.06);
+    opacity: 1;
+  }
+}
+
+@keyframes ringOut {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+@keyframes twinkle {
+  from {
+    opacity: 0.25;
+    transform: scale(0.6) rotate(0deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.1) rotate(45deg);
+  }
+}
+
+@keyframes land {
+  0% {
+    transform: translateY(-7%) scale(1.04, 1.1);
+  }
+  35% {
+    transform: translateY(3%) scale(1.08, 0.9);
+  }
+  65% {
+    transform: translateY(-1%) scale(0.98, 1.03);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+@keyframes landFlash {
+  0% {
+    opacity: 1;
+    transform: scale(1.35);
+  }
+  100% {
+    opacity: 0.28;
+    transform: scale(0.85);
+  }
+}
+
+@keyframes winPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.13);
+  }
+}
+
+@keyframes glowPulse {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(0.9);
+  }
+  45% {
+    opacity: 0.85;
+    transform: scale(1.18);
+  }
+}
+
+@keyframes sweep {
+  0% {
+    transform: translateX(0) skewX(-18deg);
+  }
+  60%,
+  100% {
+    transform: translateX(420%) skewX(-18deg);
+  }
+}

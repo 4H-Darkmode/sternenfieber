@@ -1,0 +1,221 @@
+.root {
+  --ray-a: rgba(255, 207, 74, 0.26);
+  --ray-b: rgba(255, 61, 184, 0.16);
+  --core: rgba(255, 207, 74, 0.55);
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  color: var(--c-text);
+}
+
+.root[data-tier='mega'] {
+  --ray-a: rgba(255, 61, 184, 0.3);
+  --ray-b: rgba(52, 231, 255, 0.2);
+  --core: rgba(255, 61, 184, 0.6);
+}
+
+.root[data-tier='epic'] {
+  --ray-a: rgba(52, 231, 255, 0.32);
+  --ray-b: rgba(255, 207, 74, 0.26);
+  --core: rgba(139, 92, 255, 0.75);
+}
+
+.dim {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 45%, rgba(20, 11, 46, 0.55) 0%, rgba(5, 2, 14, 0.92) 70%);
+}
+
+.rays {
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  width: 0;
+  height: 0;
+  will-change: transform;
+}
+
+.raysA,
+.raysB {
+  position: absolute;
+  left: -90vmax;
+  top: -90vmax;
+  width: 180vmax;
+  height: 180vmax;
+  border-radius: 50%;
+  -webkit-mask-image: radial-gradient(circle, #000 0%, rgba(0, 0, 0, 0.6) 25%, transparent 62%);
+  mask-image: radial-gradient(circle, #000 0%, rgba(0, 0, 0, 0.6) 25%, transparent 62%);
+  will-change: transform;
+}
+
+.raysA {
+  background: repeating-conic-gradient(from 0deg, var(--ray-a) 0deg 6deg, transparent 6deg 18deg);
+  animation: spin 22s linear infinite;
+}
+
+.raysB {
+  background: repeating-conic-gradient(from 9deg, var(--ray-b) 0deg 4deg, transparent 4deg 24deg);
+  animation: spin 34s linear infinite reverse;
+}
+
+.core {
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  width: 90vmin;
+  height: 90vmin;
+  margin: -45vmin 0 0 -45vmin;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--core) 0%, transparent 62%);
+  animation: corePulse 1.2s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+.content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(8px, 2vh, 20px);
+  padding: 0 var(--gutter);
+  text-align: center;
+}
+
+.title {
+  will-change: transform;
+}
+
+.titleInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 0.92;
+  animation: breathe 1.6s ease-in-out infinite;
+  filter: drop-shadow(0 6px 0 rgba(60, 10, 40, 0.9)) drop-shadow(0 0 28px var(--core));
+}
+
+.word {
+  font-family: var(--f-display);
+  font-size: clamp(56px, 17vw, 190px);
+  letter-spacing: 0.02em;
+  color: transparent;
+  background: linear-gradient(180deg, #fffbe6 0%, #ffd84a 38%, #e8961a 55%, #fff2b0 72%, #c46a00 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-stroke: 2px rgba(90, 30, 0, 0.55);
+}
+
+.root[data-tier='mega'] .word {
+  background: linear-gradient(180deg, #ffffff 0%, #ffb3e6 30%, #ff3db8 55%, #ffd84a 80%, #ff8a3d 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-stroke: 2px rgba(80, 0, 50, 0.6);
+}
+
+.root[data-tier='epic'] .word {
+  background: linear-gradient(
+    100deg,
+    #34e7ff 0%,
+    #b98bff 18%,
+    #ff3db8 36%,
+    #ffcf4a 54%,
+    #5dff9e 72%,
+    #34e7ff 90%,
+    #b98bff 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-stroke: 2px rgba(20, 0, 60, 0.65);
+  animation: rainbow 1.6s linear infinite;
+}
+
+.amountWrap {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4em;
+  padding: 0.25em 0.9em;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(42, 23, 96, 0.85), rgba(20, 11, 46, 0.9));
+  border: 2px solid rgba(255, 207, 74, 0.7);
+  box-shadow: 0 0 24px rgba(255, 207, 74, 0.45), inset 0 0 18px rgba(255, 207, 74, 0.18);
+  will-change: transform;
+}
+
+.amount {
+  font-family: var(--f-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: clamp(30px, 8vw, 76px);
+  color: #fff6c2;
+  text-shadow: 0 0 14px var(--c-gold-glow), 0 0 32px rgba(255, 61, 184, 0.4);
+}
+
+.unit {
+  font-size: clamp(12px, 2.4vw, 18px);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--c-gold);
+}
+
+.hint {
+  margin-top: clamp(4px, 2vh, 18px);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--c-text-dim);
+  animation: blink 1.4s ease-in-out infinite alternate;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes corePulse {
+  from {
+    opacity: 0.55;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.045);
+  }
+}
+
+@keyframes rainbow {
+  from {
+    background-position: 0% 0;
+  }
+  to {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes blink {
+  from {
+    opacity: 0.35;
+  }
+  to {
+    opacity: 0.9;
+  }
+}
