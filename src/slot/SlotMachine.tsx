@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { bus } from '../core/events';
 import { REELS, ROWS, type Cell, type Pos, type SpinResult, type SymbolId } from '../engine/types';
+import { PAYLINES } from '../engine/paylines';
 import PaylineOverlay from '../fx/PaylineOverlay';
 import { fx } from '../fx/particles';
 import { shake } from '../fx/shake';
@@ -333,7 +334,7 @@ export default function SlotMachine(props: SlotMachineProps) {
         </h2>
         <span className={`${s.deco} ${s.decoR}`} aria-hidden="true">✦</span>
       </div>
-      <div className={s.tagline}>10 Gewinnlinien · Freispiele · Sternenmünzen</div>
+      <div className={s.tagline}>{PAYLINES.length} Gewinnlinien · Freispiele · Sternenmünzen</div>
 
       <div className={s.cabinet}>
         <div className={s.bulbs} aria-hidden="true">

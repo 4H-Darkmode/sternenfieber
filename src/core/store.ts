@@ -233,15 +233,26 @@ export const useGame = create<GameState>()((set, get) => {
         set({ winAmount: r.totalWin, winDurationMs: rollMs });
         bus.emit('rollupStart', { from: 0, to: r.totalWin, durationMs: rollMs });
         const lines = r.lineWins;
-        const per = turbo ? 250 : 650;
+        let elapsed = 0;
+        if (lines.length > 1) {
+          // all winning cells at once first (like real slots), then cycle quickly
+          const all = lines.flatMap((l) => l.positions);
+          set({ highlight: { positions: all } });
+          const intro = turbo ? 200 : 450;
+          await sleep(intro);
+          elapsed += intro;
+        }
         if (lines.length) {
+          const budget = Math.max(rollMs - elapsed, lines.length * 160);
+          const per = Math.max(160, Math.min(turbo ? 250 : 650, budget / lines.length));
           for (let i = 0; i < lines.length; i++) {
             set({ highlight: { positions: lines[i].positions, lineIndex: lines[i].lineIndex } });
             bus.emit('lineWinShow', { win: lines[i], index: i });
             await sleep(per);
+            elapsed += per;
           }
         }
-        const rest = rollMs - lines.length * per;
+        const rest = rollMs - elapsed;
         if (rest > 0) await sleep(rest);
         bus.emit('rollupEnd', { amount: r.totalWin });
       }

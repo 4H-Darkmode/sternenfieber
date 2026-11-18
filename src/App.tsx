@@ -3,7 +3,6 @@ import Home from './pages/Home';
 import Play from './pages/Play';
 import Background from './pages/Background';
 import About from './pages/About';
-import Harness from './slot/dev/Harness';
 
 export default function App() {
   return (
@@ -12,7 +11,6 @@ export default function App() {
       <Route path="/spielen" element={<Play />} />
       <Route path="/hintergrund" element={<Background />} />
       <Route path="/ueber" element={<About />} />
-      <Route path="/dev" element={<Harness />} />
     </Routes>
   );
 }

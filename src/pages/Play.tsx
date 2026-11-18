@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { attachAudio, initAudio, useAudioSettings } from '../audio';
 import { bus, type GameEvents } from '../core/events';
 import { lossSoFar, useGame } from '../core/store';
-import { BET_STEPS, BONUS_BUY_COST_X, START_BALANCE, getStrip, type ForceOutcome } from '../engine';
+import { BET_STEPS, BONUS_BUY_COST_X, START_BALANCE, getStrip } from '../engine';
 import { BigWinOverlay, FreeSpinsOverlays, ParticleCanvas } from '../fx';
 import {
   CalloutFeed,
@@ -19,26 +19,14 @@ import {
 import { ControlBar, SlotMachine } from '../slot';
 import SiteFooter from './components/SiteFooter';
 import SiteNav from './components/SiteNav';
+import PresenterPanel from './components/PresenterPanel';
 import styles from './Play.module.css';
-
-const FORCE_OPTIONS: { id: ForceOutcome; label: string }[] = [
-  { id: 'nearmiss', label: 'Beinahe-Gewinn' },
-  { id: 'ldw', label: 'Getarnter Verlust' },
-  { id: 'coins', label: 'Münz-Bonus' },
-  { id: 'bigwin', label: 'Big Win' },
-  { id: 'freespins', label: 'Freispiele' },
-];
-
-function wantsDebug() {
-  return /[?&]debug(=1)?\b/.test(window.location.search + '&' + (window.location.hash.split('?')[1] ?? ''));
-}
 
 export default function Play() {
   const g = useGame();
   const audio = useAudioSettings();
   const [callouts, setCallouts] = useState<CalloutData[]>([]);
   const [cashoutOpen, setCashoutOpen] = useState(false);
-  const [debug, setDebug] = useState(wantsDebug);
   const gate = useMemo(() => createCalloutGate(), []);
   const revealRef = useRef(g.reveal);
   revealRef.current = g.reveal;
@@ -61,17 +49,6 @@ export default function Play() {
       }),
     [gate],
   );
-
-  // presentation shortcut: "D" toggles the force panel
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      const t = e.target as HTMLElement | null;
-      if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) return;
-      if (e.key === 'd' || e.key === 'D') setDebug((d) => !d);
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, []);
 
   const onReveal = (v: boolean) => {
     g.setReveal(v);
@@ -171,33 +148,11 @@ export default function Play() {
           )}
         </div>
 
-        {debug && (
-          <div className={styles.debug} role="group" aria-label="Präsentation: nächsten Spin erzwingen">
-            <span>Präsentation – nächster Spin:</span>
-            {FORCE_OPTIONS.map((o) => (
-              <button
-                key={o.id}
-                type="button"
-                className={g.nextForce === o.id ? styles.forceOn : undefined}
-                onClick={() => g.setForce(g.nextForce === o.id ? null : o.id)}
-              >
-                {o.label}
-              </button>
-            ))}
-            <button
-              type="button"
-              onClick={g.resetSession}
-              disabled={!idle || !!g.freeSpins || g.limit.current != null || !!g.limit.pending}
-              title={g.limit.current != null ? 'Nicht möglich, solange eine Limite aktiv ist' : undefined}
-            >
-              Session zurücksetzen
-            </button>
-          </div>
-        )}
       </main>
 
       <SiteFooter variant="casino" />
 
+      <PresenterPanel />
       <ParticleCanvas />
       <BigWinOverlay />
       <FreeSpinsOverlays />

@@ -84,30 +84,6 @@
   font-weight: 600;
 }
 
-.debug {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-  padding: 10px 12px;
-  border: 1px dashed var(--c-line);
-  border-radius: var(--radius);
-  font-size: 13px;
-  color: var(--c-text-dim);
-}
-.debug button {
-  border: 1px solid var(--c-line);
-  background: var(--c-surface);
-  border-radius: 999px;
-  padding: 6px 12px;
-  font-size: 13px;
-}
-.debug .forceOn {
-  background: var(--c-gold);
-  color: #2a1400;
-  border-color: var(--c-gold);
-}
-
 @media (max-width: 980px) {
   .revealOn .stage {
     grid-template-columns: minmax(0, 1fr);

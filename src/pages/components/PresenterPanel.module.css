@@ -1,0 +1,148 @@
+.trigger {
+  position: fixed;
+  left: 10px;
+  bottom: 10px;
+  z-index: 40;
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(180, 140, 255, 0.18);
+  background: rgba(20, 11, 46, 0.6);
+  color: var(--c-text-dim);
+  opacity: 0.35;
+  transition: opacity 0.2s;
+}
+.trigger:hover,
+.trigger:focus-visible {
+  opacity: 1;
+}
+.armed {
+  opacity: 0.8;
+  color: var(--c-gold);
+  border-color: var(--c-gold);
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(5, 3, 14, 0.72);
+  backdrop-filter: blur(4px);
+  animation: fade 0.18s ease-out;
+}
+
+.dialog {
+  width: min(440px, 100%);
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+  background: var(--k-paper);
+  color: var(--k-ink);
+  border-radius: var(--radius);
+  padding: 18px 18px 14px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  outline: none;
+  animation: rise 0.22s var(--ease-out);
+}
+
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+.head h2 {
+  margin: 2px 0 0;
+  font-size: 20px;
+}
+.kicker {
+  margin: 0;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--k-red);
+}
+.close {
+  border: 0;
+  background: none;
+  font-size: 26px;
+  line-height: 1;
+  color: var(--k-ink-dim);
+  padding: 0 4px;
+}
+
+.note {
+  margin: 8px 0 12px;
+  font-size: 14px;
+  color: var(--k-ink-dim);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.option {
+  width: 100%;
+  text-align: left;
+  display: grid;
+  gap: 2px;
+  padding: 10px 12px;
+  border: 1px solid var(--k-rule);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--k-ink);
+}
+.option:hover {
+  border-color: var(--k-ink);
+}
+.on {
+  border-color: var(--k-red);
+  background: var(--k-red-soft);
+}
+.label {
+  font-weight: 700;
+  font-size: 15px;
+}
+.hint {
+  font-size: 13px;
+  color: var(--k-ink-dim);
+}
+
+.foot {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+.link {
+  border: 0;
+  background: none;
+  padding: 4px 0;
+  font-size: 13px;
+  color: var(--k-ink-dim);
+  text-decoration: underline;
+}
+.link:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}
