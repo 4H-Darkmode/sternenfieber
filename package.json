@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "sim": "tsx scripts/sim.ts"
+    "sim": "tsx scripts/sim.ts",
+    "set-password": "node scripts/set-password.mjs"
   },
   "dependencies": {
     "gsap": "^3.12.5",
