@@ -337,7 +337,6 @@ export const useGame = create<GameState>()((set, get) => {
         return;
       }
       if (limitBlocks(s.bet)) return;
-      bus.emit('buttonClick', { kind: 'spin' });
       set({
         balance: r2(s.balance - s.bet),
         lastWin: 0,
@@ -380,7 +379,6 @@ export const useGame = create<GameState>()((set, get) => {
 
     toggleTurbo() {
       set((s) => ({ turbo: !s.turbo }));
-      bus.emit('buttonClick', { kind: 'toggle' });
     },
 
     startAutoplay(n = 25) {

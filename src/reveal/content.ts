@@ -339,6 +339,8 @@ export function calloutFor(type: keyof GameEvents, payload: unknown, stats?: Ses
       const mech = NEAR_MISS_MECH[info.kind];
       let text = info.detail?.trim() ?? '';
       if (info.stripFact) {
+        // engine detail may already state the strip fact – keep only its first sentence
+        text = text.split(/(?<=[.!?])\s+/)[0] ?? text;
         const f = info.stripFact;
         const pct = f.stripLength > 0 ? (f.countOnStrip / f.stripLength) * 100 : 0;
         const name = SYMBOL_NAMES[f.symbol] ?? f.symbol;
