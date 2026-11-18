@@ -1,0 +1,201 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: var(--gutter);
+  background: rgba(10, 6, 24, 0.72);
+  backdrop-filter: blur(3px) grayscale(0.6);
+  animation: fade 240ms var(--ease-out) backwards;
+  overflow-y: auto;
+}
+
+.panel {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  max-height: calc(100dvh - 2 * var(--gutter));
+  overflow-y: auto;
+  color-scheme: light;
+  background: var(--k-paper);
+  color: var(--k-ink);
+  font-family: var(--f-body);
+  border-radius: 6px;
+  padding: 26px 22px 18px;
+  box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.7);
+  border-top: 6px solid var(--k-red);
+  animation: rise 380ms var(--ease-back) backwards;
+}
+
+.panel:focus {
+  outline: none;
+}
+
+.stamp {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  margin: 0;
+  padding: 3px 8px;
+  border: 2px solid var(--k-red);
+  border-radius: 4px;
+  color: var(--k-red);
+  font-family: var(--f-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transform: rotate(4deg);
+}
+
+.title {
+  margin: 18px 0 14px;
+  font-size: 1.35rem;
+  line-height: 1.25;
+  font-weight: 800;
+}
+
+.big {
+  font-family: var(--f-mono);
+  color: var(--k-red);
+  font-size: 1.15em;
+}
+
+.ledger {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.ledger > div {
+  padding: 8px 10px;
+  border: 1px solid var(--k-rule);
+  border-radius: 4px;
+  background: #fff;
+}
+
+.ledger dt {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--k-ink-dim);
+}
+
+.ledger dd {
+  margin: 2px 0 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.num {
+  font-family: var(--f-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.neg {
+  color: var(--k-red);
+}
+
+.note {
+  margin: 12px 0 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.law {
+  margin-top: 14px;
+  padding: 10px 12px;
+  background: var(--k-paper-2);
+  border-left: 3px solid var(--k-ink);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.law p {
+  margin: 4px 0 0;
+}
+
+.law abbr {
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.lawTitle {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.stop {
+  flex: 1 1 200px;
+  min-height: 52px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--k-ink);
+  color: var(--k-paper);
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.continue {
+  flex: 0 1 auto;
+  min-height: 52px;
+  padding: 0 18px;
+  border: 1.5px solid var(--k-ink-dim);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--k-ink);
+  font-weight: 600;
+}
+
+.stop:hover {
+  background: #000;
+}
+
+.continue:hover {
+  background: rgba(22, 19, 14, 0.06);
+}
+
+.stop:focus-visible,
+.continue:focus-visible {
+  outline: 3px solid var(--k-blue);
+  outline-offset: 2px;
+}
+
+.hint {
+  margin: 12px 0 0;
+  font-size: 0.78rem;
+  color: var(--k-ink-dim);
+  font-style: italic;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.97);
+  }
+}
+
+@media (max-width: 400px) {
+  .ledger {
+    grid-template-columns: 1fr;
+  }
+}

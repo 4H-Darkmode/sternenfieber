@@ -1,0 +1,36 @@
+.feed {
+  width: 100%;
+  max-width: 380px;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.item {
+  margin: 0;
+}
+
+/* slight alternating tilt: pinned notes, not a UI list */
+.item:nth-child(even) > * {
+  rotate: 0.4deg;
+}
+
+.item:nth-child(odd) > * {
+  rotate: -0.3deg;
+}
+
+@media (max-width: 520px) {
+  .feed {
+    max-width: none;
+  }
+
+  .item:nth-child(n) > * {
+    rotate: 0deg;
+  }
+}
