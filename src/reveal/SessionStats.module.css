@@ -1,209 +1,213 @@
 .ledger {
   color-scheme: light;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    'hero story'
+    'more more'
+    'details details';
+  align-items: center;
+  gap: 8px 16px;
   background:
-    linear-gradient(to right, transparent 0 22px, var(--k-red) 22px 23.5px, transparent 23.5px 26px, var(--k-red) 26px 27.5px, transparent 27.5px),
+    linear-gradient(to right, transparent 0 14px, var(--k-red) 14px 15.5px, transparent 15.5px 18px, var(--k-red) 18px 19.5px, transparent 19.5px),
     var(--k-paper);
   color: var(--k-ink);
   border-radius: 6px;
   box-shadow:
     0 1px 0 var(--k-rule),
     0 12px 28px -16px rgba(0, 0, 0, 0.6);
-  padding: 10px 14px 10px 40px;
+  padding: 12px 14px 10px 32px;
   font-family: var(--f-body);
-  font-size: 0.875rem;
 }
 
-.top {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 6px 16px;
-}
-
-.heading {
-  margin: 0;
-  flex-basis: 100%;
-  font-size: inherit;
-}
-
-.kicker {
-  font-family: var(--f-mono);
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--k-red);
-}
-
-.headline,
-.grid {
-  margin: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 18px;
-}
-
-.headline {
-  flex: 1;
-}
-
-.cell {
-  display: flex;
-  flex-direction: column;
+.hero {
+  grid-area: hero;
   min-width: 0;
 }
 
-.cell dt {
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+.kicker {
+  margin: 0;
+  font-family: var(--f-mono);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--k-ink-dim);
 }
 
-.cell dd {
-  margin: 0;
+.net {
+  margin: 2px 0 0;
+  font-family: var(--f-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(1.7rem, 7vw, 2.2rem);
   font-weight: 700;
-  font-size: 1rem;
-  line-height: 1.3;
+  line-height: 1.05;
+  color: var(--k-ink);
+  white-space: nowrap;
 }
 
-.cell dd small {
-  font-size: 0.72rem;
-  font-weight: 600;
+.neg {
+  color: var(--k-red);
+}
+
+.chf {
+  margin: 2px 0 0;
+  font-family: var(--f-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
   color: var(--k-ink-dim);
+  white-space: nowrap;
 }
 
-.num {
+.story {
+  grid-area: story;
+  min-width: 0;
+}
+
+.sentence {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.sentence strong {
   font-family: var(--f-mono);
   font-variant-numeric: tabular-nums;
 }
 
-.netCell dd {
-  font-size: 1.15rem;
-}
-
-.neg dd,
-.negText {
-  color: var(--k-red);
-}
-
-/* red-pen circle around the loss */
-.netCell.neg dd {
-  position: relative;
-  padding: 0 6px;
-  margin-left: -6px;
-}
-
-.netCell.neg dd::after {
-  content: '';
-  position: absolute;
-  inset: -3px -2px;
-  border: 1.5px solid var(--k-red);
-  border-radius: 50% 45% 55% 48%;
-  transform: rotate(-3deg);
-  pointer-events: none;
-}
-
-.wide dd {
-  font-weight: 500;
-  font-size: 0.875rem;
-}
-
 .mark {
-  background: var(--k-red-soft);
+  background: linear-gradient(transparent 58%, rgba(212, 32, 44, 0.22) 58%);
   color: var(--k-red);
   font-weight: 700;
-  padding: 0 4px;
-  border-radius: 2px;
-  box-shadow: inset 0 -2px 0 var(--k-red);
+}
+
+.facts {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+}
+
+.facts li {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.factLabel {
+  font-size: 0.72rem;
+  color: var(--k-ink-dim);
+}
+
+.factValue {
+  font-family: var(--f-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.more {
+  grid-area: more;
+  justify-self: start;
 }
 
 .toggle {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  min-height: 36px;
-  padding: 4px 10px;
-  border: 1.5px solid var(--k-ink);
-  border-radius: 999px;
-  background: transparent;
-  color: var(--k-ink);
+  min-height: 32px;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  color: var(--k-ink-dim);
   font-size: 0.78rem;
   font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.toggle:hover {
+  color: var(--k-ink);
 }
 
 .toggle:focus-visible {
   outline: 2px solid var(--k-blue);
   outline-offset: 2px;
+  border-radius: 2px;
 }
 
 .chevUp {
   transform: rotate(180deg);
 }
 
-.body {
-  display: none;
-  margin-top: 10px;
-  padding-top: 10px;
+.details {
+  grid-area: details;
+  list-style: none;
+  margin: 0;
+  padding: 8px 0 2px;
   border-top: 1px dashed var(--k-rule);
-}
-
-.open {
-  display: block;
-}
-
-.chf {
-  margin: 10px 0 0;
-  display: flex;
-  gap: 8px;
-  align-items: baseline;
+  display: grid;
+  gap: 4px;
+  font-size: 0.82rem;
   line-height: 1.45;
-}
-
-.eq {
-  font-family: var(--f-mono);
-  font-weight: 700;
-  color: var(--k-red);
-}
-
-.dim {
   color: var(--k-ink-dim);
-  font-size: 0.8rem;
 }
 
-/* desktop: everything visible in one compact band */
+.details strong {
+  color: var(--k-ink);
+  font-family: var(--f-mono);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+/* phone: number on top, sentence below */
+@media (max-width: 480px) {
+  .ledger {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'hero'
+      'story'
+      'more'
+      'details';
+  }
+
+  .hero {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    column-gap: 10px;
+  }
+
+  .kicker {
+    flex-basis: 100%;
+  }
+}
+
+/* wide: one calm band – number | sentence + facts | details */
 @media (min-width: 760px) {
   .ledger {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    gap: 6px 22px;
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas:
+      'hero story more'
+      'details details details';
+    column-gap: 24px;
   }
 
-  .top {
-    flex: none;
-  }
-
-  .headline {
-    flex: none;
-  }
-
-  .toggle {
-    display: none;
-  }
-
-  .body {
-    display: block;
-    flex: 1 1 400px;
-    margin-top: 0;
-    padding-top: 0;
-    border-top: 0;
-    padding-left: 18px;
+  .story {
+    padding-left: 24px;
     border-left: 1px dashed var(--k-rule);
   }
 
-  .heading {
-    flex-basis: 100%;
+  .more {
+    align-self: start;
   }
 }
