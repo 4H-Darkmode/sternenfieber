@@ -7,6 +7,7 @@ export {
   SCATTER_PAYS,
   COIN_VALUE_WEIGHTS,
   FREE_SPINS_RETRIGGER,
+  LINE_WIN_MULTIPLIER,
   MAX_FREE_SPINS_PER_ROUND,
   LINE_SYMBOLS,
   isLineSymbol,
@@ -25,4 +26,4 @@ export {
   computeWinTier,
 } from './evaluate';
 export { playFreeSpinsRound, type FreeSpinsRound } from './freespins';
-export { simulate, simulateBonusBuy, type SimStats } from './simulate';
+export { simulate, simulateBonusBuy, simulateFreeSpins, exactScatterDistribution, type SimStats, type FreeModeStats } from './simulate';

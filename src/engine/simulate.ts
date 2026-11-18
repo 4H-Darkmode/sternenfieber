@@ -164,3 +164,60 @@ export function exactScatterDistribution(mode: SpinMode): number[] {
   }
   return dist;
 }
+
+export interface FreeModeStats {
+  spins: number;
+  /** share of free spins with a COLLECT visible */
+  collectVisible: number;
+  /** share of free spins where the collector paid (≥1 coin visible) */
+  collectPays: number;
+  /** share of free-spin winnings from collect / lines / scatter */
+  collectShare: number;
+  lineShare: number;
+  scatterShare: number;
+  avgCoinsPerCollect: number;
+  /** average paid collect, x bet */
+  avgCollectX: number;
+  /** average win per free spin, x bet */
+  avgWinPerSpinX: number;
+  /** free spins with any win */
+  hitRate: number;
+  /** free spins with a line win */
+  lineHitRate: number;
+}
+
+/** Statistics over n independent free-mode spins (bet = 1). */
+export function simulateFreeSpins(n: number, seed = 42): FreeModeStats {
+  const rng = createRng(seed);
+  let visible = 0, pays = 0, coinsInCollect = 0, collect = 0, lines = 0, scatter = 0, total = 0, hits = 0, lineHits = 0;
+  for (let i = 0; i < n; i++) {
+    const r = spin({ bet: 1, mode: 'free', rng });
+    if (r.grid[REELS - 1].some((c) => c.symbol === 'COLLECT')) visible++;
+    if (r.coinCollect) {
+      pays++;
+      collect += r.coinCollect.total;
+      coinsInCollect += r.coinCollect.coinPositions.length;
+    }
+    let l = 0;
+    for (const w of r.lineWins) l += w.payout;
+    lines += l;
+    if (l > 0) lineHits++;
+    scatter += getScatterWin(r);
+    total += r.totalWin;
+    if (r.totalWin > 0) hits++;
+  }
+  const t = Math.max(total, 1e-9);
+  return {
+    spins: n,
+    collectVisible: visible / n,
+    collectPays: pays / n,
+    collectShare: collect / t,
+    lineShare: lines / t,
+    scatterShare: scatter / t,
+    avgCoinsPerCollect: pays ? coinsInCollect / pays : 0,
+    avgCollectX: pays ? collect / pays : 0,
+    avgWinPerSpinX: total / n,
+    hitRate: hits / n,
+    lineHitRate: lineHits / n,
+  };
+}

@@ -7,7 +7,7 @@ import {
   evaluateLine,
   getScatterWin,
 } from './evaluate';
-import { PAYTABLE, roundCredits } from './paytable';
+import { LINE_WIN_MULTIPLIER, PAYTABLE, roundCredits } from './paytable';
 import { PAYLINES, PAYLINE_COLORS } from './paylines';
 import { BET_STEPS } from './types';
 import { countOnStrip, stripLength } from './reels';
@@ -106,6 +106,28 @@ describe('payline evaluation', () => {
     expect(byLine[2]).toMatchObject({ symbol: 'L3', count: 5 });
     // line 6 [0,0,1,2,2] → L1 L1 H3 → nothing
     expect(byLine[5]).toBeUndefined();
+  });
+});
+
+describe('free-spins line multiplier', () => {
+  it('free spins pay line wins x3, base x1', () => {
+    expect(LINE_WIN_MULTIPLIER).toEqual({ base: 1, free: 3 });
+    const grid = middle(['H2', 'H2', 'H2', 'L1', 'L3']);
+    const base = evaluateLine(grid, 0, 1, 'base')!;
+    const free = evaluateLine(grid, 0, 1, 'free')!;
+    expect(base.payout).toBeCloseTo(PAYTABLE.H2[3] / LINES);
+    expect(free.payout).toBeCloseTo((PAYTABLE.H2[3] * 3) / LINES);
+    expect(evaluateGrid(grid, 'free', 1, STOPS).totalWin).toBeCloseTo(3 * evaluateGrid(grid, 'base', 1, STOPS).totalWin);
+  });
+  it('coin collect and scatter pays are not multiplied', () => {
+    const grid = g(
+      [coin(2), 'L1', 'H2'],
+      ['H3', 'H1', 'L2'],
+      ['L3', 'L2', 'L4'],
+      ['H4', 'L2', 'H1'],
+      ['L2', 'COLLECT', 'L4'],
+    );
+    expect(evaluateGrid(grid, 'free', 1, STOPS).coinCollect?.total).toBe(2);
   });
 });
 

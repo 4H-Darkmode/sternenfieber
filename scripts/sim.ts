@@ -1,10 +1,10 @@
 /* Sternenfieber math report: `npm run sim [spins] [seed]` */
-import { exactScatterDistribution, simulate, simulateBonusBuy } from '../src/engine/simulate';
+import { exactScatterDistribution, simulate, simulateBonusBuy, simulateFreeSpins } from '../src/engine/simulate';
 import { PAYTABLE, expectedCoinValue } from '../src/engine/paytable';
 import { STRIPS, countOnStrip } from '../src/engine/reels';
 import { BET_STEPS, BONUS_BUY_COST_X } from '../src/engine/types';
 import { PAYLINES } from '../src/engine/paylines';
-import { roundCredits } from '../src/engine/paytable';
+import { LINE_WIN_MULTIPLIER, roundCredits } from '../src/engine/paytable';
 
 const n = Number(process.argv[2] ?? 10_000_000);
 const seed = Number(process.argv[3] ?? 42);
@@ -60,6 +60,18 @@ row('Bonus buy EV – dedicated sim', pct(bb.avgX / BONUS_BUY_COST_X, 1), `avg $
 const expRtp = s.rtpBaseLines + s.rtpCoins + (ex[3] * 2 + ex[4] * 10 + ex[5] * 50) + exTrig * bb.avgX;
 row('RTP (exact scatter odds + bonus sim)', pct(expRtp), 'lower-variance estimate');
 
+const fm = simulateFreeSpins(Math.max(200_000, Math.round(n / 10)), seed + 2);
+hr(`Free-spins mode (${fm.spins.toLocaleString('de-CH')} single free spins)`);
+row('Collector visible', pct(fm.collectVisible), 'target 35–45 %');
+row('Collector pays (≥1 coin)', pct(fm.collectPays));
+row('Avg coins per collect', fm.avgCoinsPerCollect.toFixed(2));
+row('Avg collect value', `${fm.avgCollectX.toFixed(2)}x bet`);
+row('Share of FS winnings: collect', pct(fm.collectShare), 'target 60–80 %');
+row('Share of FS winnings: lines', pct(fm.lineShare));
+row('Share of FS winnings: scatter', pct(fm.scatterShare));
+row('Avg win per free spin', `${fm.avgWinPerSpinX.toFixed(2)}x bet`);
+row('Free spins with any win / line win', `${pct(fm.hitRate, 1)} / ${pct(fm.lineHitRate, 1)}`);
+
 hr('Extremes & tiers (base spins)');
 row('Max base spin', `${s.maxBaseWinX.toFixed(1)}x`);
 row('Max free-spins round', `${s.maxFsRoundX.toFixed(1)}x`);
@@ -72,6 +84,7 @@ const minBet = Math.min(...BET_STEPS);
 const minPay = Math.min(...Object.values(PAYTABLE).flatMap((p) => [p[3], p[4], p[5]]));
 hr(`Paytable (x line bet; ${PAYLINES.length} lines, line bet = bet/${PAYLINES.length})`);
 row(`Smallest line win at bet ${minBet.toFixed(2)}`, roundCredits((minPay * minBet) / PAYLINES.length).toFixed(2), `= ${minPay} line bets`);
+row('Line-win multiplier base / free', `x${LINE_WIN_MULTIPLIER.base} / x${LINE_WIN_MULTIPLIER.free}`);
 for (const [sym, p] of Object.entries(PAYTABLE)) row(sym, `${p[3]} / ${p[4]} / ${p[5]}`);
 
 console.log(`\nDone in ${(s.ms / 1000).toFixed(1)} s`);

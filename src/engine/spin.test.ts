@@ -4,7 +4,7 @@ import { playFreeSpinsRound } from './freespins';
 import { COIN_VALUE_WEIGHTS } from './paytable';
 import { STRIPS, getStrip, windowAt } from './reels';
 import { createRng } from './rng';
-import { simulate } from './simulate';
+import { simulate, simulateFreeSpins } from './simulate';
 import { spin } from './spin';
 import { REELS, ROWS, type ForceOutcome, type SpinMode, type SpinResult } from './types';
 
@@ -46,6 +46,13 @@ describe('strips', () => {
   it('scatters are deliberately rarer on reels 4–5 (base)', () => {
     const density = (r: number) => STRIPS.base[r].filter((x) => x === 'SCATTER').length / STRIPS.base[r].length;
     expect(Math.max(density(3), density(4))).toBeLessThan(Math.max(density(0), density(1), density(2)));
+  });
+
+  it('collector shows on ~35–45 % of free spins (exact from strip) and ~3 % in base', () => {
+    const p = (mode: SpinMode) => (3 * STRIPS[mode][4].filter((x) => x === 'COLLECT').length) / STRIPS[mode][4].length;
+    expect(p('free')).toBeGreaterThan(0.35);
+    expect(p('free')).toBeLessThan(0.45);
+    expect(p('base')).toBeLessThan(0.07);
   });
 
   it('getStrip returns a copy', () => {
@@ -135,6 +142,16 @@ describe('free spins round', () => {
 });
 
 describe('simulation (smoke)', () => {
+  it('free mode: collector is the main feature but lines contribute', () => {
+    const f = simulateFreeSpins(100_000, 3);
+    expect(f.collectVisible).toBeGreaterThan(0.35);
+    expect(f.collectVisible).toBeLessThan(0.45);
+    expect(f.collectPays).toBeLessThanOrEqual(f.collectVisible);
+    expect(f.collectShare).toBeGreaterThan(0.5);
+    expect(f.collectShare).toBeLessThan(0.9);
+    expect(f.lineShare).toBeGreaterThan(0.1);
+  });
+
   it('is deterministic and in the right ballpark', () => {
     const a = simulate(150_000, 11);
     const b = simulate(150_000, 11);

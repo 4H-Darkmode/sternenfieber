@@ -43,27 +43,38 @@ const BASE_SPECS: ReelSpec[] = [
   { spaced: [...sc(1), 'COLLECT'], counts: { L1: 9, L2: 9, L3: 8, L4: 8, H1: 4, H2: 4, H3: 3, H4: 2, WILD: 2 } },
 ];
 
-/** Free spins: richer – more high symbols, stacked wilds, many coins & collectors. */
+/**
+ * Free spins: richer – stacked high symbols and wilds (line wins matter), plenty
+ * of coins with richer values, and a collector that shows on ~42 % of spins
+ * (6 on 43 positions). Line wins pay x3 in free spins (LINE_WIN_MULTIPLIER).
+ */
+const hiStacks = (size: number) =>
+  (['H1', 'H2', 'H3', 'H4'] as SymbolId[]).map((symbol) => ({ symbol, size, count: 1 }));
 const FREE_SPECS: ReelSpec[] = [
-  { spaced: sc(2), counts: { L1: 4, L2: 4, L3: 4, L4: 4, H1: 4, H2: 4, H3: 4, H4: 4, COIN: 11 } },
   {
     spaced: sc(2),
-    counts: { L1: 4, L2: 4, L3: 4, L4: 4, H1: 3, H2: 3, H3: 3, H4: 3, COIN: 11 },
-    stacks: [{ symbol: 'WILD', size: 3, count: 1 }],
+    counts: { L1: 2, L2: 2, L3: 2, L4: 2, H1: 1, H2: 1, H3: 1, H4: 1, COIN: 8 },
+    stacks: hiStacks(4),
   },
   {
     spaced: sc(2),
-    counts: { L1: 4, L2: 4, L3: 4, L4: 4, H1: 3, H2: 3, H3: 3, H4: 3, COIN: 11 },
-    stacks: [{ symbol: 'WILD', size: 3, count: 1 }],
+    counts: { L1: 2, L2: 2, L3: 2, L4: 2, H1: 1, H2: 1, H3: 1, H4: 1, COIN: 8 },
+    stacks: [...hiStacks(4), { symbol: 'WILD', size: 3, count: 1 }],
+  },
+  {
+    spaced: sc(2),
+    counts: { L1: 2, L2: 2, L3: 2, L4: 2, H1: 1, H2: 1, H3: 1, H4: 1, COIN: 8 },
+    stacks: [...hiStacks(4), { symbol: 'WILD', size: 3, count: 1 }],
   },
   {
     spaced: sc(1),
-    counts: { L1: 4, L2: 4, L3: 4, L4: 4, H1: 4, H2: 4, H3: 3, H4: 3, COIN: 11 },
-    stacks: [{ symbol: 'WILD', size: 3, count: 1 }],
+    counts: { L1: 2, L2: 2, L3: 2, L4: 2, H1: 1, H2: 1, H3: 1, H4: 1, COIN: 8 },
+    stacks: [...hiStacks(4), { symbol: 'WILD', size: 3, count: 1 }],
   },
   {
-    spaced: [...sc(1), ...Array.from({ length: 12 }, () => 'COLLECT' as SymbolId)],
-    counts: { L1: 4, L2: 4, L3: 4, L4: 4, H1: 4, H2: 4, H3: 4, H4: 3, WILD: 2 },
+    spaced: [...sc(1), ...Array.from({ length: 6 }, () => 'COLLECT' as SymbolId)],
+    counts: { L1: 3, L2: 3, L3: 3, L4: 3, H1: 1, H2: 1, H3: 1, H4: 1, WILD: 4 },
+    stacks: hiStacks(4),
   },
 ];
 

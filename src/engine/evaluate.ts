@@ -4,6 +4,7 @@
 import { PAYLINES } from './paylines';
 import {
   FREE_SPINS_RETRIGGER,
+  LINE_WIN_MULTIPLIER,
   PAYTABLE,
   SCATTER_PAYS,
   isLineSymbol,
@@ -30,8 +31,11 @@ import {
 /** Number of paylines (25); lineBet = bet / LINES. */
 export const LINES = PAYLINES.length;
 
-/** Evaluate one payline. Returns the best-paying combination or null. */
-export function evaluateLine(grid: Grid, lineIndex: number, bet: number): LineWin | null {
+/**
+ * Evaluate one payline. Returns the best-paying combination or null.
+ * In free spins line pays are multiplied by LINE_WIN_MULTIPLIER.free.
+ */
+export function evaluateLine(grid: Grid, lineIndex: number, bet: number, mode: SpinMode = 'base'): LineWin | null {
   const line = PAYLINES[lineIndex];
   const syms: SymbolId[] = line.map((row, reel) => grid[reel][row].symbol);
   if (!isLineSymbol(syms[0])) return null;
@@ -62,14 +66,14 @@ export function evaluateLine(grid: Grid, lineIndex: number, bet: number): LineWi
     count: best.count,
     positions,
     // never let a celebrated win round to 0.00 (min 0.01 credits)
-    payout: Math.max(0.01, roundCredits((best.mult * bet) / LINES)),
+    payout: Math.max(0.01, roundCredits((best.mult * LINE_WIN_MULTIPLIER[mode] * bet) / LINES)),
   };
 }
 
-export function evaluateLines(grid: Grid, bet: number): LineWin[] {
+export function evaluateLines(grid: Grid, bet: number, mode: SpinMode = 'base'): LineWin[] {
   const wins: LineWin[] = [];
   for (let i = 0; i < LINES; i++) {
-    const w = evaluateLine(grid, i, bet);
+    const w = evaluateLine(grid, i, bet, mode);
     if (w) wins.push(w);
   }
   return wins;
@@ -185,8 +189,8 @@ export function computeNearMiss(
   const four = lineWins.find((w) => w.count === 4 && (w.symbol === 'H3' || w.symbol === 'H4' || w.symbol === 'WILD'));
   if (four && !lineWins.some((w) => w.count === 5)) {
     const s = four.symbol as LineSymbol;
-    const p4 = PAYTABLE[s][4] / LINES;
-    const p5 = PAYTABLE[s][5] / LINES;
+    const p4 = (PAYTABLE[s][4] * LINE_WIN_MULTIPLIER[mode]) / LINES;
+    const p5 = (PAYTABLE[s][5] * LINE_WIN_MULTIPLIER[mode]) / LINES;
     const reel = REELS - 1;
     const countOn = countOnStrip(mode, reel, s);
     const len = stripLength(mode, reel);
@@ -204,7 +208,7 @@ export function computeNearMiss(
 
 /** Evaluate a fully built grid (coin values already assigned). */
 export function evaluateGrid(grid: Grid, mode: SpinMode, bet: number, stops: number[]): SpinResult {
-  const lineWins = evaluateLines(grid, bet);
+  const lineWins = evaluateLines(grid, bet, mode);
   const scatterPositions = findSymbol(grid, 'SCATTER');
   const scatterCount = scatterPositions.length;
   const coinCollect = evaluateCoins(grid, bet);

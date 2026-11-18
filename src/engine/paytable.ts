@@ -26,6 +26,12 @@ export const PAYTABLE: Record<LineSymbol, Record<3 | 4 | 5, number>> = {
   WILD: { 3: 30, 4: 125, 5: 600 },
 };
 
+/**
+ * Line-win multiplier per mode: free spins pay all line wins x3
+ * ("Freispiele: Liniengewinne x3"). LineWin.payout already includes it.
+ */
+export const LINE_WIN_MULTIPLIER: Record<SpinMode, number> = { base: 1, free: 3 };
+
 /** Scatter pays as multiples of the TOTAL bet, by number of scatters anywhere. */
 export const SCATTER_PAYS: Record<3 | 4 | 5, number> = { 3: 2, 4: 10, 5: 50 };
 
@@ -47,13 +53,13 @@ export const COIN_VALUE_WEIGHTS: Record<SpinMode, readonly (readonly [value: num
     [50, 0.2],
   ],
   free: [
-    [0.5, 23],
-    [1, 28],
+    [0.5, 13],
+    [1, 21],
     [2, 22],
-    [5, 15],
-    [10, 8],
-    [25, 3],
-    [50, 1],
+    [5, 24],
+    [10, 12],
+    [25, 6],
+    [50, 3],
   ],
 };
 
