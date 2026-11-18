@@ -9,17 +9,17 @@ export const isLineSymbol = (s: SymbolId): s is LineSymbol =>
   s !== 'SCATTER' && s !== 'COIN' && s !== 'COLLECT';
 
 /**
- * Line pays as multiples of the LINE bet (lineBet = totalBet / 10).
+ * Line pays as multiples of the LINE bet (lineBet = totalBet / 25, i.e. bet / PAYLINES.length).
  * payout = PAYTABLE[symbol][count] * lineBet.
  * A pure line of WILDs (3+ wilds from reel 0, not extended by a regular symbol)
  * pays with its own row, which equals the H4 (gold star) row.
  */
 export const PAYTABLE: Record<LineSymbol, Record<3 | 4 | 5, number>> = {
-  L1: { 3: 5, 4: 20, 5: 60 },
-  L2: { 3: 5, 4: 20, 5: 60 },
-  L3: { 3: 5, 4: 25, 5: 80 },
-  L4: { 3: 5, 4: 25, 5: 100 },
-  H1: { 3: 12, 4: 40, 5: 125 },
+  L1: { 3: 5, 4: 25, 5: 40 },
+  L2: { 3: 5, 4: 25, 5: 45 },
+  L3: { 3: 5, 4: 25, 5: 50 },
+  L4: { 3: 5, 4: 25, 5: 60 },
+  H1: { 3: 10, 4: 40, 5: 125 },
   H2: { 3: 15, 4: 50, 5: 175 },
   H3: { 3: 20, 4: 75, 5: 300 },
   H4: { 3: 30, 4: 125, 5: 600 },
@@ -38,11 +38,11 @@ export const MAX_FREE_SPINS_PER_ROUND = 100;
 /** Coin values (multiples of TOTAL bet) with weights, per mode. */
 export const COIN_VALUE_WEIGHTS: Record<SpinMode, readonly (readonly [value: number, weight: number])[]> = {
   base: [
-    [0.5, 35],
+    [0.5, 38],
     [1, 30],
-    [2, 20],
-    [5, 10],
-    [10, 4],
+    [2, 19],
+    [5, 9],
+    [10, 3],
     [25, 0.8],
     [50, 0.2],
   ],

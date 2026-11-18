@@ -2,7 +2,9 @@
 import { exactScatterDistribution, simulate, simulateBonusBuy } from '../src/engine/simulate';
 import { PAYTABLE, expectedCoinValue } from '../src/engine/paytable';
 import { STRIPS, countOnStrip } from '../src/engine/reels';
-import { BONUS_BUY_COST_X } from '../src/engine/types';
+import { BET_STEPS, BONUS_BUY_COST_X } from '../src/engine/types';
+import { PAYLINES } from '../src/engine/paylines';
+import { roundCredits } from '../src/engine/paytable';
 
 const n = Number(process.argv[2] ?? 10_000_000);
 const seed = Number(process.argv[3] ?? 42);
@@ -33,9 +35,10 @@ row('  base coin collect', pct(s.rtpCoins));
 row('  free spins (incl. retriggers)', pct(s.rtpFreeSpins));
 
 hr('Frequencies (base game)');
-row('Hit frequency (win > 0)', pct(s.hitFrequency), 'target 25–32 %');
+row('Hit frequency (win > 0)', pct(s.hitFrequency), 'target 40–50 %');
 row('Real wins (win ≥ bet)', pct(s.realWinShare));
-row('LDW (0 < win < bet)', pct(s.ldwShare), `${s.ldwCount.toLocaleString('de-CH')} spins`);
+row('LDW (0 < win < bet)', pct(s.ldwShare), `${s.ldwCount.toLocaleString('de-CH')} spins · target 20–28 %`);
+row('LDW share of all wins', pct(s.ldwCount / Math.max(1, s.hitFrequency * s.spins)));
 row('Coin collect', pct(s.coinCollectShare));
 row('Anticipation shown', pct(s.anticipationShare));
 row('Free spins trigger', `1 in ${s.fsOneIn.toFixed(0)}`, `${s.fsTriggers} triggers · target 1 in 150–250`);
@@ -65,7 +68,10 @@ for (const t of ['none', 'small', 'big', 'mega', 'epic'] as const) {
   row(`Tier ${t}`, pct(s.tiers[t] / s.spins, 3), `${s.tiers[t].toLocaleString('de-CH')}`);
 }
 
-hr('Paytable (x line bet; line bet = bet/10)');
+const minBet = Math.min(...BET_STEPS);
+const minPay = Math.min(...Object.values(PAYTABLE).flatMap((p) => [p[3], p[4], p[5]]));
+hr(`Paytable (x line bet; ${PAYLINES.length} lines, line bet = bet/${PAYLINES.length})`);
+row(`Smallest line win at bet ${minBet.toFixed(2)}`, roundCredits((minPay * minBet) / PAYLINES.length).toFixed(2), `= ${minPay} line bets`);
 for (const [sym, p] of Object.entries(PAYTABLE)) row(sym, `${p[3]} / ${p[4]} / ${p[5]}`);
 
 console.log(`\nDone in ${(s.ms / 1000).toFixed(1)} s`);

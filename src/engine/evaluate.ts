@@ -27,7 +27,7 @@ import {
   type WinTier,
 } from './types';
 
-/** Number of paylines; lineBet = bet / LINES. */
+/** Number of paylines (25); lineBet = bet / LINES. */
 export const LINES = PAYLINES.length;
 
 /** Evaluate one payline. Returns the best-paying combination or null. */
@@ -61,7 +61,8 @@ export function evaluateLine(grid: Grid, lineIndex: number, bet: number): LineWi
     symbol: best.symbol,
     count: best.count,
     positions,
-    payout: roundCredits((best.mult * bet) / LINES),
+    // never let a celebrated win round to 0.00 (min 0.01 credits)
+    payout: Math.max(0.01, roundCredits((best.mult * bet) / LINES)),
   };
 }
 

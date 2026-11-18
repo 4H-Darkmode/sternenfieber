@@ -34,11 +34,11 @@ const BASE_SPECS: ReelSpec[] = [
   // reel 1
   { spaced: sc(1), counts: { L1: 10, L2: 9, L3: 8, L4: 8, H1: 4, H2: 3, H3: 3, H4: 2, COIN: 3 } },
   // reel 2
-  { spaced: sc(2), counts: { L1: 8, L2: 8, L3: 7, L4: 7, H1: 4, H2: 3, H3: 3, H4: 2, WILD: 3, COIN: 3 } },
+  { spaced: sc(2), counts: { L1: 8, L2: 8, L3: 7, L4: 7, H1: 3, H2: 3, H3: 3, H4: 2, WILD: 4, COIN: 3 } },
   // reel 3
   { spaced: sc(2), counts: { L1: 8, L2: 8, L3: 7, L4: 7, H1: 4, H2: 3, H3: 3, H4: 2, WILD: 3, COIN: 3 } },
   // reel 4 – supernova rare
-  { spaced: sc(1), counts: { L1: 8, L2: 8, L3: 8, L4: 8, H1: 4, H2: 4, H3: 3, H4: 2, WILD: 4, COIN: 3 } },
+  { spaced: sc(1), counts: { L1: 8, L2: 8, L3: 8, L4: 8, H1: 4, H2: 4, H3: 3, H4: 2, WILD: 3, COIN: 3 } },
   // reel 5 – supernova rare, collector only here
   { spaced: [...sc(1), 'COLLECT'], counts: { L1: 9, L2: 9, L3: 8, L4: 8, H1: 4, H2: 4, H3: 3, H4: 2, WILD: 2 } },
 ];

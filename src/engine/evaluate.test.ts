@@ -1,12 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import {
+  LINES,
   computeAnticipation,
   computeWinTier,
   evaluateGrid,
   evaluateLine,
   getScatterWin,
 } from './evaluate';
-import { PAYTABLE } from './paytable';
+import { PAYTABLE, roundCredits } from './paytable';
+import { PAYLINES, PAYLINE_COLORS } from './paylines';
+import { BET_STEPS } from './types';
 import { countOnStrip, stripLength } from './reels';
 import type { Cell, Grid, SymbolId } from './types';
 
@@ -29,6 +32,41 @@ const middle = (m: [SymbolId, SymbolId, SymbolId, SymbolId, SymbolId]): Grid =>
     ['L2', m[4], 'L4'],
   );
 
+describe('paylines', () => {
+  it('has 25 unique lines, the first 10 unchanged', () => {
+    expect(PAYLINES).toHaveLength(25);
+    expect(LINES).toBe(25);
+    expect(new Set(PAYLINES.map((l) => l.join(''))).size).toBe(25);
+    PAYLINES.forEach((l) => {
+      expect(l).toHaveLength(5);
+      l.forEach((row) => expect([0, 1, 2]).toContain(row));
+    });
+    expect(PAYLINES.slice(0, 10).map((l) => l.join(''))).toEqual([
+      '11111', '00000', '22222', '01210', '21012', '00122', '22100', '10001', '12221', '10121',
+    ]);
+  });
+  it('has 25 distinct colours', () => {
+    expect(PAYLINE_COLORS).toHaveLength(25);
+    expect(new Set(PAYLINE_COLORS.map((c) => c.toLowerCase())).size).toBe(25);
+  });
+});
+
+describe('minimum wins', () => {
+  const minBet = Math.min(...BET_STEPS);
+  it('every paytable entry pays at least 0.04 at the smallest bet', () => {
+    for (const row of Object.values(PAYTABLE)) {
+      for (const c of [3, 4, 5] as const) {
+        expect(roundCredits((row[c] * minBet) / LINES)).toBeGreaterThanOrEqual(0.04);
+      }
+    }
+  });
+  it('a 3x low-symbol line at bet 0.20 shows a visible 0.04', () => {
+    const r = evaluateGrid(middle(['L1', 'L1', 'L1', 'H2', 'L3']), 'base', minBet, STOPS);
+    expect(r.totalWin).toBe(0.04);
+    expect(r.isLDW).toBe(true);
+  });
+});
+
 describe('payline evaluation', () => {
   it('pays 3 of a kind from reel 1 on the middle line', () => {
     const r = evaluateGrid(middle(['L1', 'L1', 'L1', 'H2', 'L3']), 'base', 1, STOPS);
@@ -36,8 +74,8 @@ describe('payline evaluation', () => {
     const w = r.lineWins[0];
     expect(w).toMatchObject({ lineIndex: 0, symbol: 'L1', count: 3 });
     expect(w.positions).toEqual([[0, 1], [1, 1], [2, 1]]);
-    expect(w.payout).toBeCloseTo(PAYTABLE.L1[3] / 10);
-    expect(r.totalWin).toBeCloseTo(0.5);
+    expect(w.payout).toBeCloseTo(PAYTABLE.L1[3] / LINES);
+    expect(r.totalWin).toBeCloseTo(0.2);
   });
 
   it('requires the run to start on reel 1', () => {
@@ -46,10 +84,11 @@ describe('payline evaluation', () => {
     expect(r.totalWin).toBe(0);
   });
 
-  it('pays 5 of a kind and scales with bet (line bet = bet/10)', () => {
+  it('pays 5 of a kind and scales with bet (line bet = bet/25)', () => {
     const r = evaluateGrid(middle(['H4', 'H4', 'H4', 'H4', 'H4']), 'base', 2, STOPS);
-    expect(r.lineWins[0]).toMatchObject({ symbol: 'H4', count: 5 });
-    expect(r.lineWins[0].payout).toBeCloseTo((PAYTABLE.H4[5] * 2) / 10);
+    const w = r.lineWins.find((x) => x.lineIndex === 0)!;
+    expect(w).toMatchObject({ symbol: 'H4', count: 5 });
+    expect(w.payout).toBeCloseTo((PAYTABLE.H4[5] * 2) / LINES);
   });
 
   it('evaluates every payline independently', () => {
@@ -82,10 +121,10 @@ describe('wild substitution', () => {
   });
 
   it('pure wild line pays its own (H4) row when that is better', () => {
-    // WILD WILD WILD L1 L2 → L1x4 = 20 vs WILDx3 = 30 → wild line wins
+    // WILD WILD WILD L1 L2 → L1x4 = 25 vs WILDx3 = 30 → wild line wins
     const w = evaluateLine(middle(['WILD', 'WILD', 'WILD', 'L1', 'L2']), 0, 1)!;
     expect(w).toMatchObject({ symbol: 'WILD', count: 3 });
-    expect(w.payout).toBeCloseTo(PAYTABLE.WILD[3] / 10);
+    expect(w.payout).toBeCloseTo(PAYTABLE.WILD[3] / LINES);
   });
 
   it('prefers the regular symbol when it pays more', () => {
@@ -229,7 +268,7 @@ describe('line near-miss', () => {
     const r = evaluateGrid(middle(['H4', 'H4', 'H4', 'H4', 'L3']), 'base', 1, STOPS);
     expect(r.nearMiss?.kind).toBe('line');
     expect(r.nearMiss?.detail).toContain('Vier Goldsterne auf Linie 1');
-    expect(r.nearMiss?.detail).toContain('60× statt 12.5× Einsatz');
+    expect(r.nearMiss?.detail).toContain(`${PAYTABLE.H4[5] / LINES}× statt ${PAYTABLE.H4[4] / LINES}× Einsatz`);
   });
   it('4 low symbols are no near-miss', () => {
     expect(evaluateGrid(middle(['L1', 'L1', 'L1', 'L1', 'L3']), 'base', 1, STOPS).nearMiss).toBeNull();
@@ -246,9 +285,9 @@ describe('LDW & win tiers', () => {
     expect(evaluateGrid(middle(['L1', 'L1', 'L1', 'H2', 'L3']), 'free', 1, STOPS).isLDW).toBe(false);
   });
   it('win equal to bet is not an LDW', () => {
-    // H1 x3 = 12 line bets = 1.2x bet
-    const r = evaluateGrid(middle(['H1', 'H1', 'H1', 'L4', 'L3']), 'base', 1, STOPS);
-    expect(r.totalWin).toBeCloseTo(1.2);
+    // L1 x4 = 25 line bets = exactly 1x bet
+    const r = evaluateGrid(middle(['L1', 'L1', 'L1', 'L1', 'L3']), 'base', 1, STOPS);
+    expect(r.totalWin).toBeCloseTo(1);
     expect(r.isLDW).toBe(false);
   });
   it('no win → not LDW, tier none', () => {

@@ -236,7 +236,10 @@ export const useGame = create<GameState>()((set, get) => {
         let elapsed = 0;
         if (lines.length > 1) {
           // all winning cells at once first (like real slots), then cycle quickly
-          const all = lines.flatMap((l) => l.positions);
+          const seen = new Set<string>();
+          const all = lines
+            .flatMap((l) => l.positions)
+            .filter(([x, y]) => !seen.has(`${x}-${y}`) && !!seen.add(`${x}-${y}`));
           set({ highlight: { positions: all } });
           const intro = turbo ? 200 : 450;
           await sleep(intro);

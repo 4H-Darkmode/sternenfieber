@@ -140,8 +140,10 @@ describe('simulation (smoke)', () => {
     const b = simulate(150_000, 11);
     expect({ ...a, ms: 0 }).toEqual({ ...b, ms: 0 });
     // Base-game-only parts are stable even on a small sample
-    expect(a.hitFrequency).toBeGreaterThan(0.25);
-    expect(a.hitFrequency).toBeLessThan(0.32);
+    expect(a.hitFrequency).toBeGreaterThan(0.4);
+    expect(a.hitFrequency).toBeLessThan(0.5);
+    expect(a.ldwShare).toBeGreaterThan(0.2);
+    expect(a.ldwShare).toBeLessThan(0.28);
     expect(a.rtpBaseLines + a.rtpScatter + a.rtpCoins).toBeGreaterThan(0.48);
     expect(a.rtpBaseLines + a.rtpScatter + a.rtpCoins).toBeLessThan(0.58);
     expect(a.fsOneIn).toBeGreaterThan(150);
